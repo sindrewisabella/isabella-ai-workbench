@@ -1,0 +1,32 @@
+{
+  "id": "thinking",
+  "name": "grill-me 个人适配与思考路径",
+  "category": "personal",
+  "kind": "module",
+  "parent": null,
+  "why": "辅助澄清问题、归因和保留人的判断；作为方法说明。",
+  "problem": "辅助澄清问题、归因和保留人的判断；作为方法说明。",
+  "before": "面对模糊任务时，容易直接找方案，还没说清要改变什么。",
+  "human": "说出自己的目标、判断和证据，做关键取舍。",
+  "ai": "通过追问帮助发现目标、差距和假设，最后把行动收敛成可以检查的结果。",
+  "effect": "已有 grill-me 个人适配与思考路径 Skill；grill-me 基础框架来自外部，不写成全部原创方法。",
+  "flow": [
+    "确定谁的问题",
+    "描述期望结果",
+    "检查判断与证据",
+    "收敛下一步与交付物"
+  ],
+  "reuse": "先准备对应输入并明确操作范围；替换岗位、使用者或目标记录后，重新核对身份、权限和完成结果。",
+  "inputs": "说出自己的目标、判断和证据，做关键取舍。",
+  "outputs": "收敛下一步与交付物",
+  "links": [],
+  "skills": [
+    "grill-me",
+    "think-through"
+  ],
+  "related": [],
+  "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
+  "contribution": "grill-me 基础框架有外部来源；我结合个人工作情境做适配，与“思考路径”方法一起使用，不把基础框架计为全部原创。",
+  "statusLabel": "试验与方法",
+  "demo": "demo/?tool=workflow&case=thinking"
+}

@@ -1,0 +1,375 @@
+{
+  "snapshotDate": "2026-10-18",
+  "website": "website/",
+  "caseCount": 33,
+  "skillCount": 25,
+  "cases": [
+    {
+      "id": "salary",
+      "name": "薪酬工具",
+      "path": "cases/salary/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "workbench",
+      "name": "笔试工作台",
+      "path": "cases/workbench/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "seats",
+      "name": "双城座位图",
+      "path": "cases/seats/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "dashboard",
+      "name": "招聘看板",
+      "path": "cases/dashboard/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "cli",
+      "name": "招聘 CLI 系列",
+      "path": "cases/cli/",
+      "implementation": "public-platform-source"
+    },
+    {
+      "id": "careers",
+      "name": "公司招聘官网",
+      "path": "cases/careers/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "evaluation",
+      "name": "简历评估与校准",
+      "path": "cases/evaluation/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "test-submit",
+      "name": "候选人笔试提交与延期回收入口",
+      "path": "cases/test-submit/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "test-review",
+      "name": "笔试验收、返修与复测回传",
+      "path": "cases/test-review/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "ops-eval",
+      "name": "运维／测试岗位评估与日任务",
+      "path": "cases/ops-eval/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "eval-assign",
+      "name": "指定评估人批量分配",
+      "path": "cases/eval-assign/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "interview-invite",
+      "name": "正式面试邀约",
+      "path": "cases/interview-invite/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "recommendation",
+      "name": "候选人推荐卡",
+      "path": "cases/recommendation/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "ledger-sync",
+      "name": "评估与笔试台账同步",
+      "path": "cases/ledger-sync/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "intern-sync",
+      "name": "实习一面通过人选同步",
+      "path": "cases/intern-sync/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "offer-sync",
+      "name": "Offer 到飞书人事同步",
+      "path": "cases/offer-sync/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "progress-cards",
+      "name": "招聘进度卡与分岗位播报",
+      "path": "cases/progress-cards/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "daily-card",
+      "name": "招聘日报卡片生成器",
+      "path": "cases/daily-card/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "intern-org",
+      "name": "实习生组织架构与人力矩阵",
+      "path": "cases/intern-org/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "boss-desktop",
+      "name": "BOSS Mac 桌面操作适配",
+      "path": "cases/boss-desktop/",
+      "implementation": "public-platform-source"
+    },
+    {
+      "id": "maimai",
+      "name": "脉脉 AI 招聘试验",
+      "path": "cases/maimai/",
+      "implementation": "public-platform-source"
+    },
+    {
+      "id": "daily-bot",
+      "name": "日报填报与次日待办机器人",
+      "path": "cases/daily-bot/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "daily-sync",
+      "name": "个人日报定向归档同步",
+      "path": "cases/daily-sync/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "bridge",
+      "name": "飞书里的 Codex／Claude 对话工作入口",
+      "path": "cases/bridge/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "doc-reply",
+      "name": "飞书文档评论自动回复",
+      "path": "cases/doc-reply/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "meeting",
+      "name": "会议记录分析与行动项提炼",
+      "path": "cases/meeting/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "interview-evaluator",
+      "name": "面试评价生成器",
+      "path": "cases/interview-evaluator/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "rubric-builder",
+      "name": "招聘评估标准生成 Skill 系列",
+      "path": "cases/rubric-builder/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "writing",
+      "name": "招聘汇报、候选人讨论与写作规范 Skill",
+      "path": "cases/writing/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "thinking",
+      "name": "grill-me 个人适配与思考路径",
+      "path": "cases/thinking/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "notes",
+      "name": "成长便签与桌面小组件",
+      "path": "cases/notes/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "pets",
+      "name": "AI 动画宠物作品",
+      "path": "cases/pets/",
+      "implementation": "browser-demo-and-documentation"
+    },
+    {
+      "id": "recovery",
+      "name": "Warp 工作区与会话恢复",
+      "path": "cases/recovery/",
+      "implementation": "browser-demo-and-documentation"
+    }
+  ],
+  "skills": [
+    {
+      "id": "boss-autogreet-request-resumes",
+      "name": "BOSS 招呼与简历阶段核对",
+      "path": "skills/boss-autogreet-request-resumes/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "boss-desktop",
+      "name": "BOSS 桌面适配",
+      "path": "skills/boss-desktop/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "boss-recruiting-template",
+      "name": "BOSS 多岗位复用框架",
+      "path": "skills/boss-recruiting-template/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "feedback-writing",
+      "name": "管理反馈写作",
+      "path": "skills/feedback-writing/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "daily-report-bot",
+      "name": "日报填报与次日提醒",
+      "path": "skills/daily-report-bot/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "feishu-candidate-recommendation-card",
+      "name": "候选人推荐卡",
+      "path": "skills/feishu-candidate-recommendation-card/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "feishu-doc-comment-autoreply",
+      "name": "文档评论回复",
+      "path": "skills/feishu-doc-comment-autoreply/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "feishu-doc-editorial-style",
+      "name": "文档结构与排版",
+      "path": "skills/feishu-doc-editorial-style/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "feishu-doc-writer",
+      "name": "工作文档写作",
+      "path": "skills/feishu-doc-writer/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "feishu-fullstack-evaluation-digest",
+      "name": "全栈待评估汇总",
+      "path": "skills/feishu-fullstack-evaluation-digest/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "feishu-fullstack-evaluation-sync",
+      "name": "笔试验收与复测回传",
+      "path": "skills/feishu-fullstack-evaluation-sync/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "feishu-hire-assign-evaluation",
+      "name": "指定评估人分配",
+      "path": "skills/feishu-hire-assign-evaluation/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "feishu-hire-intern-progress-card",
+      "name": "实习招聘进度卡",
+      "path": "skills/feishu-hire-intern-progress-card/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "feishu-hire-interview-invite",
+      "name": "正式面试邀约",
+      "path": "skills/feishu-hire-interview-invite/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "grill-me",
+      "name": "grill-me 问题梳理",
+      "path": "skills/grill-me/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "hatch-pet",
+      "name": "动画宠物创作与打包",
+      "path": "skills/hatch-pet/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "hire-eval-builder",
+      "name": "岗位标准生成",
+      "path": "skills/hire-eval-builder/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "hire-eval-builder-replica",
+      "name": "岗位标准生成 · 案例复现版",
+      "path": "skills/hire-eval-builder-replica/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "hire-eval-builder-universal",
+      "name": "岗位标准生成 · 通用适配版",
+      "path": "skills/hire-eval-builder-universal/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "humanize-draft",
+      "name": "草稿可读性修改",
+      "path": "skills/humanize-draft/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "interview-evaluator",
+      "name": "面试评价",
+      "path": "skills/interview-evaluator/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "meeting-analyzer",
+      "name": "会议记录分析",
+      "path": "skills/meeting-analyzer/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "recruiting-review-doc",
+      "name": "招聘进展综述",
+      "path": "skills/recruiting-review-doc/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "talent-discussion-post",
+      "name": "候选人分歧讨论",
+      "path": "skills/talent-discussion-post/",
+      "packageType": "public-usage-guide"
+    },
+    {
+      "id": "think-through",
+      "name": "思考路径与归因",
+      "path": "skills/think-through/",
+      "packageType": "public-usage-guide"
+    }
+  ],
+  "sourceSnapshots": [
+    {
+      "caseId": "cli",
+      "repo": "https://github.com/sindrewisabella/boss-recruiting-template",
+      "commit": "f5d94dd715f0884e729dc95d8df4cd1fb5753906"
+    },
+    {
+      "caseId": "boss-desktop",
+      "repo": "https://github.com/sindrewisabella/boss-desktop-cli",
+      "commit": "0888f2cbbc49ff76d2de7379c2ca268e4387f4f4"
+    },
+    {
+      "caseId": "maimai",
+      "repo": "https://github.com/sindrewisabella/maimai-recruiting-cli",
+      "commit": "0163d827f0714c9a30aaed0a71ac75d8b68ab148"
+    }
+  ]
+}

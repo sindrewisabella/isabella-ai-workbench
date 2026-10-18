@@ -1,0 +1,36 @@
+{
+  "id": "writing",
+  "name": "招聘汇报、候选人讨论与写作规范 Skill",
+  "category": "judgment",
+  "kind": "module",
+  "parent": null,
+  "why": "沉淀可复用的结构、证据和表达要求；适合输入输出对照。",
+  "problem": "沉淀可复用的结构、证据和表达要求；适合输入输出对照。",
+  "before": "AI 草稿常见结论不清、原始片段堆叠，仍要花时间重写。",
+  "human": "确定要让谁理解什么，核对事实、取舍与自己的表达。",
+  "ai": "按结构、证据和阅读顺序整理草稿，指出空泛结论并协助重写。",
+  "effect": "留存多项写作与表达 Skill。公开展示虚构输入和改写示例，不公开他人的内部反馈或个人材料。",
+  "flow": [
+    "明确读者与目的",
+    "检查事实与结构",
+    "重写表达",
+    "本人核对与定稿"
+  ],
+  "reuse": "先准备对应输入并明确操作范围；替换岗位、使用者或目标记录后，重新核对身份、权限和完成结果。",
+  "inputs": "确定要让谁理解什么，核对事实、取舍与自己的表达。",
+  "outputs": "本人核对与定稿",
+  "links": [],
+  "skills": [
+    "feishu-doc-writer",
+    "feishu-doc-editorial-style",
+    "humanize-draft",
+    "recruiting-review-doc",
+    "talent-discussion-post",
+    "feedback-writing"
+  ],
+  "related": [],
+  "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
+  "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
+  "statusLabel": "流程与工具",
+  "demo": "demo/?tool=workflow&case=writing"
+}

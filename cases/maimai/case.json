@@ -1,0 +1,34 @@
+{
+  "id": "maimai",
+  "name": "脉脉 AI 招聘试验",
+  "category": "automation",
+  "kind": "module",
+  "parent": "cli",
+  "why": "展示渠道研究、检索、详情读取和证据整理。",
+  "problem": "展示渠道研究、检索、详情读取和证据整理。",
+  "before": "在另一招聘渠道里，还要重新搜索人选、补读详情和整理联系依据。",
+  "human": "确定检索条件、需要核实的事实和联系范围。",
+  "ai": "协助搜索、补读资料、整理证据，并在联系前做范围检查。",
+  "effect": "脉脉 CLI 已开源并通过本地检查；完整附件回收还需补齐，不能写成全流程已验收。",
+  "flow": [
+    "确认检索条件",
+    "搜索与读取资料",
+    "整理联系依据",
+    "核对范围与结果"
+  ],
+  "reuse": "先准备对应输入并明确操作范围；替换岗位、使用者或目标记录后，重新核对身份、权限和完成结果。",
+  "inputs": "确定检索条件、需要核实的事实和联系范围。",
+  "outputs": "核对范围与结果",
+  "links": [
+    {
+      "label": "查看开源代码",
+      "url": "https://github.com/sindrewisabella/maimai-recruiting-cli"
+    }
+  ],
+  "skills": [],
+  "related": [],
+  "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
+  "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
+  "statusLabel": "试验与方法",
+  "demo": "demo/?tool=workflow&case=maimai"
+}

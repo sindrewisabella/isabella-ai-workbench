@@ -1,0 +1,36 @@
+{
+  "id": "boss-desktop",
+  "name": "BOSS Mac 桌面操作适配",
+  "category": "automation",
+  "kind": "module",
+  "parent": "cli",
+  "why": "展示网页之外的客户端适配及状态检查。",
+  "problem": "展示网页之外的客户端适配及状态检查。",
+  "before": "网页脚本的操作方式无法直接套到 Mac 客户端。",
+  "human": "确定要操作的客户端、岗位与本次范围，处理页面不一致。",
+  "ai": "通过桌面适配层核对状态、分批执行与保留结果。",
+  "effect": "桌面 CLI 已开源，离线检查通过；不把模拟测试当作当前客户端真实验收。桌面简历写入仍被阻断。",
+  "flow": [
+    "确认客户端与岗位",
+    "检查页面状态",
+    "按范围执行",
+    "核对结果并停止异常"
+  ],
+  "reuse": "先准备对应输入并明确操作范围；替换岗位、使用者或目标记录后，重新核对身份、权限和完成结果。",
+  "inputs": "确定要操作的客户端、岗位与本次范围，处理页面不一致。",
+  "outputs": "核对结果并停止异常",
+  "links": [
+    {
+      "label": "查看开源代码",
+      "url": "https://github.com/sindrewisabella/boss-desktop-cli"
+    }
+  ],
+  "skills": [
+    "boss-desktop"
+  ],
+  "related": [],
+  "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
+  "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
+  "statusLabel": "试验与方法",
+  "demo": "demo/?tool=workflow&case=boss-desktop"
+}

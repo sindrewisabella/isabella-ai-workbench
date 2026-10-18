@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.DS_Store
+.env*
+config.json
+policy.confirmed.json
+data/
+api/
+runs/
+private/
+*.log
+*.ndjson

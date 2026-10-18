@@ -1,0 +1,29 @@
+{
+  "id": "offer-sync",
+  "name": "Offer 到飞书人事同步",
+  "category": "collaboration",
+  "kind": "module",
+  "parent": null,
+  "why": "解决入职信息二次登记，展示字段校验和写后回读。",
+  "problem": "解决入职信息二次登记，展示字段校验和写后回读。",
+  "before": "候选人接受 Offer 后，还要把入职信息再登记到人事系统。",
+  "human": "确认 Offer 状态、组织映射和必须核对的入职信息。",
+  "ai": "核对来源与重复记录，按字段映射填写，再读取目标记录检查差异。",
+  "effect": "已有同步脚本、配置和历史记录；不把历史成功当作当前服务在线。",
+  "flow": [
+    "读取符合条件的 Offer",
+    "匹配组织与记录",
+    "填写对应字段",
+    "回读并记录差异"
+  ],
+  "reuse": "先准备对应输入并明确操作范围；替换岗位、使用者或目标记录后，重新核对身份、权限和完成结果。",
+  "inputs": "确认 Offer 状态、组织映射和必须核对的入职信息。",
+  "outputs": "回读并记录差异",
+  "links": [],
+  "skills": [],
+  "related": [],
+  "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
+  "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
+  "statusLabel": "流程与工具",
+  "demo": "demo/?tool=workflow&case=offer-sync"
+}

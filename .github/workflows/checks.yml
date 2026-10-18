@@ -1,0 +1,19 @@
+name: Public package checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python3 scripts/verify.py
+      - run: node --check website/assets/catalog.js
+      - run: node --check website/demo/lab.js
+      - run: node --check website/demo/extra-tools.js

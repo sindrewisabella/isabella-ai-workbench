@@ -1,0 +1,24 @@
+--- macos.py
++++ macos.py
+@@ -546,7 +546,7 @@
+     ) -> list[dict[str, Any]]:
+         self._elements = {}
+         nodes: list[dict[str, Any]] = []
+-        seen: set[int] = set()
++        seen: set[Any] = set()
+         requested_attributes = tuple(
+             dict.fromkeys((*_AX_ATTRIBUTES, *(str(item) for item in extra_attributes)))
+         )
+@@ -556,9 +556,10 @@
+             if depth > max_depth or len(nodes) >= max_nodes:
+                 return
+             try:
+-                identity = hash(element)
++                hash(element)
++                identity = element
+             except TypeError:
+-                identity = id(element)
++                identity = ("unhashable", id(element))
+             if identity in seen:
+                 return
+             seen.add(identity)

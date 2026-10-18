@@ -1,0 +1,39 @@
+{
+  "name": "招聘看板",
+  "why": "不同岗位进度分散，指标口径易混淆。",
+  "problem": "统一查看漏斗、待处理事项与推进情况。",
+  "effect": "在已有开源基础上改造了多岗位查看与刷新。这里可以按岗位看阶段人数和待跟进事项；是否让实际决策更快，还没有可核实的数据。",
+  "evidence": "一张全貌截图、一次岗位切换、指标来源与一个真实脱敏判断案例，注明开源基础。",
+  "id": "dashboard",
+  "before": "分别打开不同岗位的表格，再自己汇总每个阶段有多少人、谁需要跟进。",
+  "human": "确定指标怎么算，判断卡点原因，决定需要采取的动作。",
+  "ai": "协助汇总数据、绘制图表和切换岗位，按统一口径展示进度。",
+  "demo": "demo/?tool=dashboard",
+  "category": "collaboration",
+  "kind": "main",
+  "parent": null,
+  "flow": [
+    "确定指标口径",
+    "整理来源记录",
+    "按岗位查看",
+    "决定下一步跟进"
+  ],
+  "reuse": "先为各指标写明来源、统计区间和去重方法，再接入新岗位；阶段人数不能直接当作转化率。",
+  "inputs": "确定指标怎么算，判断卡点原因，决定需要采取的动作。",
+  "outputs": "统一查看漏斗、待处理事项与推进情况。",
+  "links": [
+    {
+      "label": "原始开源项目",
+      "url": "https://github.com/CuiSheng-TAO/algo2-recruit-board"
+    }
+  ],
+  "skills": [],
+  "evidenceType": "源码、说明与历史记录；公开示例使用虚构材料",
+  "contribution": "基于 CuiSheng-TAO/algo2-recruit-board 改造。我关注岗位适配、指标口径、数据刷新和使用要求，AI 协助代码实现。",
+  "statusLabel": "可试用示例",
+  "related": [
+    "progress-cards",
+    "daily-card",
+    "intern-org"
+  ]
+}

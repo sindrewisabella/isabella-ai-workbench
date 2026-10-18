@@ -1,0 +1,19 @@
+{
+  "id": "feishu-candidate-recommendation-card",
+  "name": "候选人推荐卡",
+  "sourceName": "feishu-candidate-recommendation-card",
+  "caseId": "recommendation",
+  "category": "judgment",
+  "what": "把证据、待核实项和材料入口整理成固定卡片，协助排版与核对。",
+  "why": "推荐人选时，简历、理由、待核实问题和协作入口分散在不同地方。",
+  "how": [
+    "核对人选与岗位",
+    "提取证据",
+    "生成卡片预览",
+    "人工复核后使用"
+  ],
+  "effect": "已留存卡片 Skill。公开版用虚构例子说明结构；尚未补充可公开的真实原卡。",
+  "exampleInput": "虚构示例：推荐人选时，简历、理由、待核实问题和协作入口分散在不同地方。\n使用前先明确：决定推荐依据和风险，复核引用是否真实。",
+  "exampleOutput": "示例检查顺序：\n1. 核对人选与岗位\n2. 提取证据\n3. 生成卡片预览\n4. 人工复核后使用",
+  "boundary": "这是与个人案例相关的 Skill 与适配方法，不能仅凭安装或版本号证明全部原创和业务效果。正式系统操作仍依赖对应账号与范围。"
+}

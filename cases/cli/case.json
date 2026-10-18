@@ -1,0 +1,78 @@
+{
+  "name": "招聘 CLI 系列",
+  "why": "渠道上的搜索、读资料、联系与回收包含大量重复操作。",
+  "problem": "让同一流程可以换岗、核对身份、去重、记录回执并在异常时停止。",
+  "effect": "2026 年 10 月 9 日的一轮运行，两个增长岗位确认新增招呼 95 个，分别为 50 和 45。平台累计从 530 到 625，差额为 95。该轮简历回收数量未找到对应记录，不填写为 0，也不把 625 全部归为本轮。",
+  "evidence": "BOSS 网页／脉脉／BOSS Mac 三种入口，附分享音频、流程说明、配置与 GitHub。",
+  "id": "cli",
+  "before": "翻看人选、点击打招呼，回到聊天索要简历，再记录操作结果。",
+  "human": "确定岗位、人选条件、联系范围和招呼语，处理具体沟通与招聘判断。",
+  "ai": "按已确定的范围读取资料、分批执行、去重，并保留操作结果。",
+  "demo": "demo/?tool=cli",
+  "category": "automation",
+  "kind": "main",
+  "parent": null,
+  "flow": [
+    "确认岗位与范围",
+    "分批打招呼",
+    "求简历与接收附件",
+    "核对回执与统计"
+  ],
+  "reuse": "替换岗位配置、筛选条件、招呼语与执行范围。先检查登录和页面状态，每批核对回执；没有“永不封号”的保证。",
+  "inputs": "确定岗位、人选条件、联系范围和招呼语，处理具体沟通与招聘判断。",
+  "outputs": "让同一流程可以换岗、核对身份、去重、记录回执并在异常时停止。",
+  "links": [
+    {
+      "label": "BOSS 网页开源代码",
+      "url": "https://github.com/sindrewisabella/boss-recruiting-template"
+    },
+    {
+      "label": "脉脉开源代码",
+      "url": "https://github.com/sindrewisabella/maimai-recruiting-cli"
+    },
+    {
+      "label": "BOSS 桌面开源代码",
+      "url": "https://github.com/sindrewisabella/boss-desktop-cli"
+    }
+  ],
+  "skills": [
+    "boss-recruiting-template",
+    "boss-autogreet-request-resumes"
+  ],
+  "evidenceType": "源码、说明与历史记录；公开示例使用虚构材料",
+  "contribution": "沿用同事提供的基础方案与已有工具能力，我明确岗位标准、多岗位复用和核对要求，推动适配与验证；AI 协助代码整理、重复执行和结果汇总。",
+  "statusLabel": "可试用示例",
+  "audio": {
+    "src": "assets/boss-share-web.m4a",
+    "title": "BOSS 自动打招呼项目分享",
+    "date": "2026.07.21",
+    "duration": "约 44 分钟"
+  },
+  "related": [
+    "boss-desktop",
+    "maimai"
+  ],
+  "recordings": [
+    {
+      "stage": 1,
+      "title": "按规则筛选并打招呼",
+      "description": "查看推荐页筛选过程与打招呼入口。片段保留原始过程，不把页面滚动或按钮出现算作成功触达。",
+      "src": "assets/boss-recordings/stage1.mp4",
+      "poster": "assets/boss-recordings/stage1-poster.png"
+    },
+    {
+      "stage": 2,
+      "title": "检查新沟通，求简历",
+      "description": "查看新会话，检查是否已经求过简历，再决定是否补做，避免重复请求。",
+      "src": "assets/boss-recordings/stage2.mp4",
+      "poster": "assets/boss-recordings/stage2-poster.png"
+    },
+    {
+      "stage": 3,
+      "title": "扫描会话，接收附件简历",
+      "description": "依次检查附件简历卡片，处理待接收项目，并在操作后复查。片段仅展示部分操作过程。",
+      "src": "assets/boss-recordings/stage3.mp4",
+      "poster": "assets/boss-recordings/stage3-poster.png"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "progress-cards",
+  "name": "招聘进度卡与分岗位播报",
+  "category": "collaboration",
+  "kind": "module",
+  "parent": "dashboard",
+  "why": "把待评估、负责人和下一步直接呈现在协作现场。",
+  "problem": "把待评估、负责人和下一步直接呈现在协作现场。",
+  "before": "更新招聘进展时，要找出待处理人选、负责人和下一步，再重新整理消息。",
+  "human": "确定岗位范围、指标口径、发送对象与时间，判断真正需要提醒的事项。",
+  "ai": "按范围汇总数据，生成岗位卡片，并对照记录检查遗漏与重复。",
+  "effect": "多个岗位卡片、Skill 和历史发送记录留存。按一个系列展示，不把不同岗位版本算成不同产品。",
+  "flow": [
+    "读取当前岗位进展",
+    "核对负责人和下一步",
+    "生成卡片",
+    "核对展示与发送记录"
+  ],
+  "reuse": "先准备对应输入并明确操作范围；替换岗位、使用者或目标记录后，重新核对身份、权限和完成结果。",
+  "inputs": "确定岗位范围、指标口径、发送对象与时间，判断真正需要提醒的事项。",
+  "outputs": "核对展示与发送记录",
+  "links": [],
+  "skills": [
+    "feishu-hire-intern-progress-card",
+    "feishu-fullstack-evaluation-digest"
+  ],
+  "related": [],
+  "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
+  "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
+  "statusLabel": "流程与工具",
+  "demo": "demo/?tool=workflow&case=progress-cards"
+}

@@ -1,0 +1,16 @@
+{
+  "confirmed": false,
+  "source": "请填写岗位负责人确认的要求与来源",
+  "job_id": "YOUR_JOB_ID",
+  "requirements": [
+    {
+      "id": "relevant_work",
+      "description": "请替换为可用原文核验的岗位要求",
+      "required": true,
+      "recall_terms": [
+        "示例关键词"
+      ]
+    }
+  ],
+  "other_constraints_to_confirm": []
+}
