@@ -25,5 +25,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "流程与工具",
-  "demo": "demo/?tool=workflow&case=ledger-sync"
+  "demo": "demo/?tool=workflow&case=ledger-sync",
+  "type": "case",
+  "input": "源记录 DEMO-03：笔试待验收。\n目标同编号记录：待回收；已有评语“需关注历史记录”。",
+  "process": "按稳定编号匹配 → 对比字段 → 更新允许同步的字段 → 回读差异。",
+  "output": "同步差异\n匹配编号：DEMO-03\n状态：待回收 → 笔试待验收\n已有评语：保留“需关注历史记录”\n匹配：1；计划更新：1\n\n真实写回后，还需读取目标行核对。",
+  "short": "减少跨系统重复登记，展示稳定主键、去重、增量和失败恢复。"
 }

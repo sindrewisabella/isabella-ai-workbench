@@ -25,5 +25,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "流程与工具",
-  "demo": "demo/?tool=workflow&case=offer-sync"
+  "demo": "demo/?tool=workflow&case=offer-sync",
+  "type": "case",
+  "input": "OFFER-DEMO-01：增长工程师，预计 2026-11-02 入职。\n目标表已有同一 Offer 编号，入职日为 11-01。\n人工备注：“电脑待领”。",
+  "process": "核对 Offer 与身份 → 匹配组织字段 → 提交指定字段 → 回读。",
+  "output": "同步差异预览\nOffer：OFFER-DEMO-01\n入职日：11-01 → 11-02\n岗位：增长工程师（不变）\n人工备注：“电脑待领”（保留）\n\n本页未更新真实人事记录。",
+  "short": "解决入职信息二次登记，展示字段校验和写后回读。"
 }

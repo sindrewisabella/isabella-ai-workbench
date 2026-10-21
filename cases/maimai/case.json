@@ -30,5 +30,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "试验与方法",
-  "demo": "demo/?tool=workflow&case=maimai"
+  "demo": "demo/?tool=workflow&case=maimai",
+  "type": "case",
+  "input": "增长岗位；关键词“SEO Python”。\n虚构人选原文：“参与 SEO 数据工具开发”。\n历史联系列表中没有这位人选。",
+  "process": "扩展搜索词 → 查看小样本 → 保留经历原文 → 生成招呼草稿 → 核对同一人会话。",
+  "output": "寻访记录与草稿\n匹配证据：参与 SEO 数据工具开发。\n历史记录：未发现已联系。\n\n开场草稿：看到你参与 SEO 数据工具，想了解你具体负责的部分，是否方便交流？\n状态：待审阅，未发送。",
+  "short": "展示渠道研究、检索、详情读取和证据整理。"
 }

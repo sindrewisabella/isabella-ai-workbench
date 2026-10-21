@@ -25,5 +25,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "流程与工具",
-  "demo": "demo/?tool=workflow&case=intern-sync"
+  "demo": "demo/?tool=workflow&case=intern-sync",
+  "type": "case",
+  "input": "虚构投递：\nDEMO-01｜一面通过\nDEMO-02｜一面待定\n目标：仅同步已通过投递。",
+  "process": "读取当前投递状态 → 筛选已通过 → 查目标表重复 → 写入并回读。",
+  "output": "同步预览\nDEMO-01：进入后续台账\nDEMO-02：不进入，保留待定\n\n新增范围：1 条投递\n匹配依据：投递编号，不按姓名合并。",
+  "short": "台账同步的岗位适配示例，保留准确岗位与通过依据。"
 }

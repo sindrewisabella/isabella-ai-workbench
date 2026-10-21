@@ -27,5 +27,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "流程与工具",
-  "demo": "demo/?tool=workflow&case=eval-assign"
+  "demo": "demo/?tool=workflow&case=eval-assign",
+  "type": "case",
+  "input": "示例投递：DEMO-01、DEMO-02。\n指定评估人：A。\n当前状态：01 没有 A；02 已有 A，并有评估人 B。",
+  "process": "按投递核对 → 仅补缺失任务 → 回读任务卡片",
+  "output": "安排结果示例\nDEMO-01｜新增评估人 A｜回读找到任务\nDEMO-02｜已有 A，跳过｜保留评估人 B\n\n新增 1 条；已有 1 条。\n创建任务不代表评估人已经提交结论。",
+  "short": "将已确定的人选、投递、评估人和推荐理由准确连接。"
 }

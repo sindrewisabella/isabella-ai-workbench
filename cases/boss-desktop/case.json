@@ -32,5 +32,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "试验与方法",
-  "demo": "demo/?tool=workflow&case=boss-desktop"
+  "demo": "demo/?tool=workflow&case=boss-desktop",
+  "type": "case",
+  "input": "客户端：BOSS Mac（虚构场景）\n岗位：GROWTH-01；本次最多 1 个招呼。\n读取结果：当前停在登录页，尚未看到岗位列表。",
+  "process": "检查客户端状态 → 识别登录阻碍 → 停止并报告",
+  "output": "运行前检查\n账号状态：未登录\n岗位身份：未核对\n执行结果：停止\n新招呼：0；未操作附件\n\n下一步：人完成登录，再核对岗位与列表。",
+  "short": "展示网页之外的客户端适配及状态检查。"
 }

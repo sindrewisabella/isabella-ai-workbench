@@ -14,6 +14,3 @@ jobs:
         with:
           node-version: '22'
       - run: python3 scripts/verify.py
-      - run: node --check website/assets/catalog.js
-      - run: node --check website/demo/lab.js
-      - run: node --check website/demo/extra-tools.js

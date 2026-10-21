@@ -1,0 +1,166 @@
+{
+  "checkedAt": "2026-10-18",
+  "sourceRevision": 918,
+  "method": {
+    "key": "application_id",
+    "managerField": "东杰评估结论",
+    "aiField": "推荐结论",
+    "scope": "台账存量推荐结果，对照招聘系统中同一投递、同一经理、简历评估阶段最新已提交结论",
+    "agreement": "相同投递编号同时具备 YES/NO 与通过/不通过时才配对；YES对通过、NO对不通过计为一致",
+    "warning": "存量对照，不是同一版本盲测；经理有结论的样本存在选择偏差，不能推广到所有简历。",
+    "excludedFormalNotFound": 2
+  },
+  "coverage": {
+    "sourceRows": 2234,
+    "uniqueApplications": 2214,
+    "duplicateRows": 17,
+    "missingIdentityRows": 0,
+    "conflictingApplications": 3
+  },
+  "roles": [
+    {
+      "role": "运维外包",
+      "applications": 933,
+      "aiDecided": 931,
+      "aiYes": 264,
+      "aiNo": 667,
+      "pendingOrNonstandard": 2,
+      "paired": 21,
+      "agree": 6,
+      "disagree": 15,
+      "matrix": {
+        "aiYesManagerPass": 4,
+        "aiYesManagerReject": 14,
+        "aiNoManagerPass": 1,
+        "aiNoManagerReject": 2
+      }
+    },
+    {
+      "role": "测试外包",
+      "applications": 1281,
+      "aiDecided": 1240,
+      "aiYes": 293,
+      "aiNo": 947,
+      "pendingOrNonstandard": 41,
+      "paired": 109,
+      "agree": 48,
+      "disagree": 61,
+      "matrix": {
+        "aiYesManagerPass": 42,
+        "aiYesManagerReject": 48,
+        "aiNoManagerPass": 13,
+        "aiNoManagerReject": 6
+      }
+    }
+  ],
+  "formalAudit": {
+    "ledgerPaired": 132,
+    "queried": 132,
+    "retrieved": 130,
+    "excluded": 2,
+    "errors": 0,
+    "submittedOnly": true,
+    "sameStageOnly": true
+  },
+  "batches": [
+    {
+      "id": "test-20261015",
+      "role": "测试外包",
+      "date": "2026-10-15",
+      "count": 51,
+      "yes": 3,
+      "no": 48,
+      "readback": 51,
+      "existingUpdated": 41,
+      "appended": 10,
+      "ruleVersion": "2026-09-18 v5.1",
+      "elapsedSeconds": null,
+      "concurrency": null,
+      "source": "2026-10-15 批次审计及回读结果"
+    },
+    {
+      "id": "test-20260920",
+      "role": "测试外包",
+      "date": "2026-09-20",
+      "count": 81,
+      "yes": 8,
+      "no": 73,
+      "readback": 81,
+      "existingUpdated": 81,
+      "appended": 0,
+      "ruleVersion": "v5.1",
+      "elapsedSeconds": null,
+      "concurrency": null,
+      "source": "2026-09-20 批次结果与回读核验"
+    },
+    {
+      "id": "ops-20260914",
+      "role": "运维外包",
+      "date": "2026-09-14",
+      "count": 5,
+      "yes": 4,
+      "no": 1,
+      "readback": 5,
+      "existingUpdated": 0,
+      "appended": 5,
+      "ruleVersion": "2026-09-14",
+      "elapsedSeconds": 1747.373,
+      "concurrency": null,
+      "source": "带起止时间的运行日志、批次报告与回读记录",
+      "scanned": 9,
+      "existing": 4,
+      "timedWorkflow": true
+    }
+  ],
+  "assignments": {
+    "role": "运维外包",
+    "date": "2026-10-15",
+    "applications": 58,
+    "primaryVerified": 58,
+    "secondaryVerified": 45,
+    "secondaryUnverified": 13,
+    "source": "自动安排评估的逐人状态与页面回读卡片",
+    "statusMeaning": "verified 代表已核对到对应系统评估任务，不代表经理已经完成评估",
+    "scope": "独立批次，与测试 51/81 份批次分开统计",
+    "fullUnattendedVerified": false,
+    "timing": [
+      {
+        "label": "主评估人",
+        "verified": 58,
+        "firstReceiptAt": "2026-10-15T06:10:54.409Z",
+        "lastReceiptAt": "2026-10-15T06:36:10.987Z",
+        "receiptSpanSeconds": 1516.578
+      },
+      {
+        "label": "第二评估人",
+        "verified": 45,
+        "firstReceiptAt": "2026-10-15T06:37:37.810Z",
+        "lastReceiptAt": "2026-10-15T06:58:25.261Z",
+        "receiptSpanSeconds": 1247.451
+      }
+    ],
+    "timingMeaning": "首条至末条已核验回执的时间跨度，不是完整安排耗时，也不包含经理实际评估时间。"
+  },
+  "limits": [
+    "51/81份测试批次缺少完整耗时及并发记录；运维9月14日运行有起止时间，系统安排另列回执跨度，不混算。",
+    "批次评估、台账回读与系统安排分别有记录；没有一份同批次全链路无人介入验收。",
+    "存量推荐跨多个规则版本，经理已评样本存在选择偏差，不是当前版本盲测准确率。"
+  ],
+  "timedWorkflow": {
+    "date": "2026-09-14",
+    "role": "运维外包",
+    "startedAt": "2026-09-14T10:45:48.921270+08:00",
+    "finishedAt": "2026-09-14T11:14:56.294619+08:00",
+    "elapsedSeconds": 1747.373,
+    "scanned": 9,
+    "existing": 4,
+    "evaluated": 5,
+    "yes": 4,
+    "no": 1,
+    "readback": 5,
+    "managerSynced": 7,
+    "scope": "扫描与去重、5份新增简历初筛、台账写回核验，以及7条经理结论同步；不是纯模型推理耗时。",
+    "limitation": "部分附件 PDF 未单独下载，依据为在线简历及附件元信息；附件读取范围仍有缺口。",
+    "source": "带起止时间的运行日志、批次报告与回读记录"
+  }
+}

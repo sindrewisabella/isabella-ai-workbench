@@ -25,5 +25,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "流程与工具",
-  "demo": "demo/?tool=workflow&case=test-submit"
+  "demo": "demo/?tool=workflow&case=test-submit",
+  "type": "case",
+  "input": "DEMO-03 提交了文档、Demo 与代码。\n提交时间：2026-10-20 17:20（UTC+8）。\n截止时间：10-20 18:00。",
+  "process": "核对编号 → 填写材料 → 提交回收；未完成时走延期入口。",
+  "output": "回收记录\n投递编号：DEMO-03\n文档：已提供；Demo：已提供；代码：已提供\n提交：10-20 17:20；截止：18:00\n状态：待验收\n\n按时提交不等于验收通过。",
+  "short": "展示候选人端输入、延期和回执，补齐工作台故事。"
 }

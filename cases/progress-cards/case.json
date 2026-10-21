@@ -28,5 +28,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "流程与工具",
-  "demo": "demo/?tool=workflow&case=progress-cards"
+  "demo": "demo/?tool=workflow&case=progress-cards",
+  "type": "case",
+  "input": "虚构实习台账：\nDEMO-01 待提交，负责人 A\nDEMO-02 待提交，负责人 B\nDEMO-03 待验收，负责人 A\n本次只生成卡片，不发送。",
+  "process": "按阶段统计 → 对应到负责人 → 生成下一步",
+  "output": "进度卡预览\n待提交：2 人；待验收：1 人。\n\n下一步\nA：跟进 DEMO-01，验收 DEMO-03。\nB：跟进 DEMO-02。\n\n数据时间：本次输入快照；未向群内发送。",
+  "short": "把待评估、负责人和下一步直接呈现在协作现场。"
 }

@@ -27,5 +27,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "流程与工具",
-  "demo": "demo/?tool=workflow&case=recommendation"
+  "demo": "demo/?tool=workflow&case=recommendation",
+  "type": "case",
+  "input": "岗位要求：能独立交付自动化工具。\n简历原文：“参与报表自动化，使用 Python 整理数据。”\n材料未说明独立负责范围与上线结果。",
+  "process": "提取原文 → 对照岗位 → 区分依据与待追问",
+  "output": "推荐卡片示例\n相关经历：参与 Python 报表自动化。\n原文依据：“参与报表自动化，使用 Python 整理数据。”\n\n待追问\n1. 你本人负责哪个模块？\n2. 工具由谁使用，怎样核对结果？\n\n当前判断：有相关经历，独立交付证据待补。",
+  "short": "把原文依据、待核实项和材料入口做成能直接协作的卡片。"
 }

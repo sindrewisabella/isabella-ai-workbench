@@ -1,12 +1,12 @@
 {
-  "snapshotDate": "2026-10-18",
+  "snapshotDate": "2026-10-21",
   "website": "website/",
   "caseCount": 33,
   "skillCount": 25,
   "cases": [
     {
       "id": "salary",
-      "name": "薪酬工具",
+      "name": "薪酬计算器",
       "path": "cases/salary/",
       "implementation": "browser-demo-and-documentation"
     },
@@ -42,7 +42,7 @@
     },
     {
       "id": "evaluation",
-      "name": "简历评估与校准",
+      "name": "批量简历评估",
       "path": "cases/evaluation/",
       "implementation": "browser-demo-and-documentation"
     },
@@ -371,5 +371,7 @@
       "repo": "https://github.com/sindrewisabella/maimai-recruiting-cli",
       "commit": "0163d827f0714c9a30aaed0a71ac75d8b68ab148"
     }
-  ]
+  ],
+  "publicUrl": "https://sindrewisabella.github.io/isabella-ai-workbench/",
+  "catalog": "website/portfolio-data.json"
 }

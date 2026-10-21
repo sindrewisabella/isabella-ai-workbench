@@ -3,7 +3,7 @@
 from pathlib import Path
 from urllib.parse import urlsplit, unquote
 from html.parser import HTMLParser
-import json,re,sys
+import json,re,sys,subprocess
 ROOT=Path(__file__).resolve().parents[1]; errors=[]
 def require(path):
     if not path.exists(): errors.append('Missing: '+str(path.relative_to(ROOT)))
@@ -12,7 +12,7 @@ class Links(HTMLParser):
     def handle_starttag(self,tag,attrs):
         for k,v in attrs:
             if k in ('href','src','poster') and v: self.urls.append(v)
-manifest=json.loads((ROOT/'manifest.json').read_text());data=json.loads((ROOT/'website/assets/catalog.json').read_text())
+manifest=json.loads((ROOT/'manifest.json').read_text());data=json.loads((ROOT/'website/portfolio-data.json').read_text())
 for kind,filename in [('cases','case.json'),('skills','skill.json')]:
     expected={x['id'] for x in data[kind]};actual={x['id'] for x in manifest[kind]}
     if expected!=actual: errors.append(kind+' manifest differs from website catalog')
@@ -25,7 +25,7 @@ for kind,filename in [('cases','case.json'),('skills','skill.json')]:
         if kind=='cases':
             for name in ['demo.html','flow.mmd']:require(folder/name)
         else:
-            for name in ['input.txt','review-output.txt']:require(folder/'examples'/name)
+            for name in ['input.txt','review-output.txt','prompt.txt']:require(folder/'examples'/name)
 for p in ROOT.rglob('*'):
     if '.git' in p.parts or not p.is_file():continue
     if p.is_symlink():errors.append('Unexpected symlink: '+str(p.relative_to(ROOT)))
@@ -44,6 +44,9 @@ for p in ROOT.rglob('*'):
             if not target.exists():errors.append('Broken HTML link: '+str(p.relative_to(ROOT))+' -> '+url)
 for x in manifest['sourceSnapshots']:
     for name in ['LICENSE','README.md','SKILL.md']:require(ROOT/'cases'/x['caseId']/'source'/name)
+for p in (ROOT/'website').glob('*.js'):
+    result=subprocess.run(['node','--check',str(p)],capture_output=True,text=True)
+    if result.returncode:errors.append('JavaScript syntax: '+str(p.relative_to(ROOT))+' '+result.stderr)
 if errors:
     print('\n'.join(sorted(set(errors))));sys.exit(1)
 print(f'PASS: {len(data["cases"])} case folders, {len(data["skills"])} Skill folders; metadata, local HTML links, source licenses, file sizes and credential patterns checked.')

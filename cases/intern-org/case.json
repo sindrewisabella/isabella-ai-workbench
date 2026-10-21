@@ -25,5 +25,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "试验与方法",
-  "demo": "demo/?tool=workflow&case=intern-org"
+  "demo": "demo/?tool=workflow&case=intern-org",
+  "type": "case",
+  "input": "虚构名单：深圳 A、B、C；厦门 D、E。\n均为在职实习生；A、B 为研发，C、D、E 为运营。",
+  "process": "统一人员标识 → 按团队与城市分组 → 查看人力分布。",
+  "output": "组织矩阵\n深圳｜研发 2｜运营 1｜合计 3\n厦门｜研发 0｜运营 2｜合计 2\n总计：5 人\n\n按城市与团队筛选，名单身份分别保留。",
+  "short": "将组织、在职、需求和人工效能判断放到同一结构。"
 }

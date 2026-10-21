@@ -28,5 +28,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "grill-me 基础框架有外部来源；我结合个人工作情境做适配，与“思考路径”方法一起使用，不把基础框架计为全部原创。",
   "statusLabel": "试验与方法",
-  "demo": "demo/?tool=workflow&case=thinking"
+  "demo": "demo/?tool=workflow&case=thinking",
+  "type": "case",
+  "input": "现象：候选人笔试经常延期。\n初步猜测：题目太难。\n已知：尚未区分通知晚、材料不全和任务难度。",
+  "process": "区分现象与猜测 → 寻找反证 → 设计小步验证",
+  "output": "归因检查表\n目标：减少无预警延期。\n假设 A：题目难；证据：待补。\n假设 B：通知或材料问题；证据：待补。\n下一步：抽查 5 条延期记录的通知时间与反馈。\n\n先补证据，再决定改题、改通知或改跟进。",
+  "short": "辅助澄清问题、归因和保留人的判断；作为方法说明。"
 }

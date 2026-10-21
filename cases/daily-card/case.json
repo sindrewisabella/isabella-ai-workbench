@@ -25,5 +25,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "流程与工具",
-  "demo": "demo/?tool=workflow&case=daily-card"
+  "demo": "demo/?tool=workflow&case=daily-card",
+  "type": "case",
+  "input": "本周虚构台账：新增 4 人、推进 2 人。\n一条投递等待业务确认岗位范围。\n下周计划：确认后安排下一轮。",
+  "process": "核对变化 → 找出卡点 → 写清下一步与依赖",
+  "output": "招聘进展综述\n本周新增 4 人，推进 2 人。\n当前卡点：1 条投递等待业务确认岗位范围。\n下一步：业务确认后，HR 安排下一轮。\n\n新增、推进与等待决定是不同口径，不相加为总成果。",
+  "short": "文档内容变成固定格式的交互卡片，展示实物和版式迭代。"
 }

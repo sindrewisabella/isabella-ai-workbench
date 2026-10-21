@@ -25,5 +25,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "试验与方法",
-  "demo": "demo/?tool=workflow&case=recovery"
+  "demo": "demo/?tool=workflow&case=recovery",
+  "type": "case",
+  "input": "恢复清单：\n工作目录：示例项目目录\n会话：DEMO-SESSION-01\n待完成：核对 2 条未确认结果\n没有提供密码、密钥或登录态。",
+  "process": "核对本地目录 → 恢复指定会话 → 读取进度 → 确认没有重复执行。",
+  "output": "恢复检查单\n会话：DEMO-SESSION-01\n继续点：核对 2 条未确认结果\n待核对：目录是否存在、会话是否可恢复\n\n打开终端不等于任务已完成，不重新执行结果未知的发送。",
+  "short": "体现长期 AI 多任务使用的上下文管理与故障处理。"
 }

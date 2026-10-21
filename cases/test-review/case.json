@@ -27,5 +27,10 @@
   "evidenceType": "本机留存的源码、Skill 或说明；公开流程样例使用虚构材料",
   "contribution": "我提供实际问题、范围与复核要求，AI 协助实现和整理；依赖的平台、开源工具与个人适配分开说明。",
   "statusLabel": "流程与工具",
-  "demo": "demo/?tool=workflow&case=test-review"
+  "demo": "demo/?tool=workflow&case=test-review",
+  "type": "case",
+  "input": "示例任务 DEMO-03：验收发现“刷新后历史消失”。\n修复说明：增加保存逻辑。\n复测结果：新增后刷新可保留；重新登录未测试。",
+  "process": "对照原问题 → 区分已测与未测 → 回传状态",
+  "output": "复测回传草稿\n问题：刷新后历史消失。\n已复测：新增→刷新，记录仍存在。\n未复测：重新登录后的记录恢复。\n状态：复测未完成\n下一步：补测重新登录，再判断是否验收通过。",
+  "short": "展示基于文档、Demo 和代码的验收依据，避免仅看页面即判通过。"
 }
