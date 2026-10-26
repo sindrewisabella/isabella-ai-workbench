@@ -1,28 +1,13 @@
 (()=>{'use strict';
-const stages=['简历初筛','简历评估','笔试','面试'],names={all:'全部岗位',growth:'增长岗位',ops:'运维岗位'};
-// Authored public examples only. Each application occurs in exactly one current stage.
-const rows=[
-['G01','growth',0,1],['G02','growth',0,2],['G03','growth',1,4],['G04','growth',1,2],['G05','growth',2,5],['G06','growth',2,1],['G07','growth',3,3],['G08','growth',3,1],
-['O01','ops',0,3],['O02','ops',0,1],['O03','ops',0,2],['O04','ops',1,6],['O05','ops',2,4],['O06','ops',2,2],['O07','ops',3,1],['O08','ops',3,3]
-].map(([id,job,stage,days])=>({id,job,stage,days}));
-const next=['核对岗位条件，完成初筛','请评估人提交结论','确认笔试提交／验收进度','确认面试安排／反馈'];
-let job='all',view='stages',stage=null;
-const $=s=>document.querySelector(s);
-function render(){
- const list=rows.filter(r=>job==='all'||r.job===job),waiting=list.filter(r=>r.days>=3),counts=stages.map((_,i)=>list.filter(r=>r.stage===i).length);
- $('#dash-title').textContent=names[job];$('#dash-view').value=view;
- document.querySelectorAll('[data-job]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.job===job));
- const kpis=`<div class="dash-kpis"><div><small>当前投递</small><strong>${list.length}<span>条</span></strong></div><div><small>等待 ≥ 3 天</small><strong>${waiting.length}<span>条</span></strong></div><div><small>当前查看岗位</small><strong>${job==='all'?2:1}<span>个</span></strong></div></div>`;
- let content='';
- if(view==='rules')content=`<section class="dash-rules"><h3>先把口径放在数字旁边。</h3><dl><dt>来源与时间</dt><dd>本页自带的 16 条虚构投递，固定快照 2026 年 10 月 26 日；不是公司实际业绩。</dd><dt>当前投递</dt><dd>每个示例投递编号只计一次；按投递统计，不跨岗位按人去重。</dd><dt>阶段人数</dt><dd>一条投递只属于一个当前阶段。各阶段相加等于当前投递数，不表示历史漏斗或转化率。</dd><dt>等待 ≥ 3 天</dt><dd>进入当前阶段满 3 天的投递；是提醒阈值，不直接代表流程超时。</dd><dt>换成真实岗位</dt><dd>从飞书招聘读取记录，由人确认阶段映射、去重方式和时间范围。公开页不连接业务系统。</dd></dl></section>`;
- else {
-  const shown=(view==='queue'?waiting:list.filter(r=>stage!==null&&r.stage===stage)).slice().sort((a,b)=>b.days-a.days||a.id.localeCompare(b.id));
-  const bars=view==='stages'?`<section aria-labelledby="stage-title"><div class="dash-section-title"><h3 id="stage-title">人选在走哪一步？</h3><small>点击数字，看对应记录</small></div><div class="dash-stages">${stages.map((n,i)=>`<button data-stage="${i}" aria-pressed="${stage===i}"><span>${n}</span><strong>${counts[i]}</strong><div class="dash-track"><i style="width:${counts[i]/list.length*100}%"></i></div></button>`).join('')}</div><p class="dash-footnote">当前阶段分布 · 各阶段合计 ${list.length} 条，不是历史转化率。</p></section>`:'';
-  content=bars+`<section class="dash-queue"><div class="dash-section-title"><h3>${view==='queue'?'等待 ≥ 3 天的记录':stage===null?'从上面的阶段开始':'当前筛选：'+stages[stage]}</h3><small>${view==='queue'?shown.length+' 条需关注':stage!==null?shown.length+' 条投递':'按岗位、阶段逐层查看'}</small></div>${shown.length?`<div class="dash-table-wrap"><table><thead><tr><th>示例投递</th><th>岗位</th><th>阶段 / 等待</th><th>下一步</th></tr></thead><tbody>${shown.map(r=>`<tr><td>${r.id}</td><td>${names[r.job]}</td><td>${stages[r.stage]} · ${r.days} 天</td><td>${next[r.stage]}</td></tr>`).join('')}</tbody></table></div>`:'<p class="dash-empty">点击一个阶段，就能看到对应的投递、等待天数和下一步。也可以切到“待跟进清单”。</p>'}</section>`;
- }
- $('#dashboard-result').innerHTML=kpis+content;
-}
-document.querySelector('.dash-app').addEventListener('click',e=>{const b=e.target.closest('[data-job],[data-stage]');if(!b)return;if(b.hasAttribute('data-job')){job=b.dataset.job;stage=null}else stage=Number(b.dataset.stage);render()});
-$('#dash-view').addEventListener('change',e=>{view=e.target.value;stage=null;render()});
-document.querySelectorAll('[data-tour]').forEach(b=>b.addEventListener('click',()=>{view=b.dataset.tour;stage=null;render();$('#exhibit').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});$('#dash-view').focus({preventScroll:true})}));
-render();})();
+const $=s=>document.querySelector(s),frame=$('#exhibit iframe');
+const zones={
+ funnel:{anchor:'fullstack-funnel',title:'从总体到个人，看清每一轮的推进。',problem:'飞书记录分散，笔试又占用了面试轮次，直接照搬系统阶段不容易看懂真实招聘流程。',feature:'把简历入库、评估、各轮技术面、HR 面和入职放进一个视图；点击阶段，展开进入时间、来源与当前状态。Offer 沟通和待入职在 HR 明细中查看。',value:'定位需要复核的流失或积压，再回到具体记录，而不是只看一个总人数。',note:'相邻阶段数字可用于观察转化，但不同阶段按各自时间窗口统计，不必然属于同一批人，不能直接当作严格同批转化率。'},
+ trend:{anchor:'fullstack-trend',title:'推荐得多，还要看能否进入下一步。',problem:'只有总推荐量，分不清是寻访量不够，还是推荐材料与岗位要求不匹配。',feature:'在同一周期里对照 HR 寻访、猎头等渠道进入评估与评估通过的数量，并可切换周、双周、月和自定义日期。',value:'让渠道投入和后续推进放在一起看，为调整寻访方式提供线索。',note:'数量差异只是分析起点，仍需结合岗位难度、材料质量与时间范围复核。'},
+ goals:{anchor:'fullstack-goals-section',title:'把“最近很忙”，变成目标与实际的对照。',problem:'只说每天处理了很多简历，不能回答推荐量是否足够、质量是否达标、距离目标还差多少。',feature:'左边放既定推荐量与通过率目标，右边放所选周期的实际完成、完成率和差距。',value:'区分需要补的是数量还是匹配度，帮助安排下一周期的招聘动作。',note:'目标来自这个看板的业务配置，不是通用招聘标准，也不是 AI 自动做出的经营判断。'},
+ interview:{anchor:'fullstack-interview-section',title:'把面试轮次、面评结果和反馈缺口连起来。',problem:'当时的系统页面难以直接按面试官汇总多轮进展，笔试占用轮次后，仅看轮次名更容易误判。',feature:'按约定的面试官与轮次规则整理记录，筛选面试官和结果，对照各轮评分、通过／不通过／待定及当前阶段，并展开完整明细。',value:'看到哪些记录尚未提交结论、哪些环节值得复核，再推动具体反馈。',note:'通过率差异可以提示问题，不足以单独判定面试官质量；待面试或未提交结论也不等于“不通过”。'}
+};
+function show(key){const z=zones[key];document.querySelectorAll('[data-zone]').forEach(b=>{b.setAttribute('aria-selected',b.dataset.zone===key);b.tabIndex=b.dataset.zone===key?0:-1});$('#dashboard-zone').setAttribute('aria-labelledby','tab-'+key);$('#dashboard-zone').innerHTML=`<h3>${z.title}</h3><dl><dt>原来卡在哪</dt><dd>${z.problem}</dd><dt>因此这样设计</dt><dd>${z.feature}</dd><dt>帮助做什么判断</dt><dd>${z.value}</dd></dl><p>${z.note}</p><button id="locate-zone">在原版看板中查看 ↑</button>`;$('#locate-zone').onclick=()=>{frame.contentDocument?.getElementById(z.anchor)?.scrollIntoView({behavior:'instant',block:'start'});$('#exhibit').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'})}}
+document.querySelector('.dashboard-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-zone]');if(b)show(b.dataset.zone)});
+$('#expand-dashboard').onclick=()=>{const expanded=$('#exhibit').classList.toggle('expanded');document.body.classList.toggle('demo-expanded',expanded);$('#expand-dashboard').textContent=expanded?'收起展示 ↙':'放大查看 ↗';$('#expand-dashboard').setAttribute('aria-expanded',expanded)};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#exhibit').classList.contains('expanded'))$('#expand-dashboard').click()});
+show('funnel');})();

@@ -1,0 +1,2925 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>招聘数据看板</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --ink: #152033;
+      --muted: #66758c;
+      --line: #dfe6ef;
+      --blue: #2563eb;
+      --blue-soft: #eaf1ff;
+      --cyan: #0891b2;
+      --green: #16a34a;
+      --green-soft: #eaf8ef;
+      --amber: #d97706;
+      --amber-soft: #fff6e6;
+      --red: #dc2626;
+      --red-soft: #fff0f0;
+      --purple: #7c3aed;
+      --shadow: 0 16px 42px rgba(25, 46, 82, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { background: var(--bg); }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 88% 0%, rgba(37, 99, 235, 0.10), transparent 30%),
+        linear-gradient(180deg, #eef4ff 0, var(--bg) 290px);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 14px;
+    }
+
+    button, input { font: inherit; }
+
+    button { color: inherit; }
+
+    .page {
+      width: min(1500px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(270px, 1fr) auto;
+      gap: 22px;
+      align-items: end;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      margin-bottom: 6px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(26px, 3vw, 42px);
+      line-height: 1.12;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+      color: var(--muted);
+    }
+
+    .job-switcher {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .job-tab {
+      padding: 7px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.82);
+      cursor: pointer;
+      font-weight: 750;
+      transition: 0.16s ease;
+    }
+
+    .job-tab:hover, .job-tab.active {
+      color: var(--blue);
+      border-color: #91aff0;
+      background: var(--blue-soft);
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(22, 163, 74, 0.10);
+    }
+
+    .period-copy {
+      padding: 5px 9px;
+      border: 1px solid #cddaf6;
+      border-radius: 8px;
+      color: #315790;
+      background: rgba(255, 255, 255, 0.58);
+      font-weight: 650;
+    }
+
+    .filters {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 9px;
+    }
+
+    .preset-row, .custom-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 7px;
+    }
+
+    .preset, .apply-btn {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 8px 11px;
+      background: rgba(255, 255, 255, 0.82);
+      cursor: pointer;
+      transition: 0.16s ease;
+    }
+
+    .preset:hover, .preset.active {
+      color: var(--blue);
+      border-color: #91aff0;
+      background: var(--blue-soft);
+    }
+
+    .preset.active { font-weight: 750; }
+
+    .date-field {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--muted);
+    }
+
+    .date-field input {
+      width: 126px;
+      border: 0;
+      outline: 0;
+      color: var(--ink);
+      background: transparent;
+    }
+
+    .apply-btn {
+      border-color: var(--blue);
+      color: white;
+      background: var(--blue);
+      font-weight: 750;
+    }
+
+    .apply-btn:hover { background: #1d4ed8; }
+
+    .section {
+      margin-top: 18px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-note {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .target-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .target-card, .panel, .kpi {
+      border: 1px solid rgba(208, 219, 235, 0.92);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: var(--shadow);
+    }
+
+    .target-card {
+      padding: 18px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .target-card::after {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      right: -74px;
+      top: -92px;
+      border-radius: 50%;
+      background: var(--blue-soft);
+    }
+
+    .target-card.actual-card::after { background: #f1eafe; }
+
+    .target-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .target-label { font-weight: 800; }
+
+    .target-versus {
+      align-self: center;
+      color: #96a3b7;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .target-metric-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .target-metric {
+      display: grid;
+      gap: 9px;
+    }
+
+    .target-metric + .target-metric {
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .target-metric-name {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .formula-pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      color: #315790;
+      background: var(--blue-soft);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .target-card.actual-card .formula-pill {
+      color: #6840a5;
+      background: #f1eafe;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 14px;
+      align-items: center;
+      margin: 18px 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .comparison-side {
+      min-width: 0;
+      padding: 13px;
+      border-radius: 12px;
+      background: var(--surface-soft);
+    }
+
+    .comparison-side.actual { background: #f2f7ff; }
+
+    .comparison-label {
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .comparison-value {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 850;
+      letter-spacing: -0.05em;
+    }
+
+    .comparison-value small {
+      margin-left: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .versus {
+      color: #96a3b7;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .progress-track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e7edf6;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), #60a5fa);
+      transition: width 0.35s ease;
+    }
+
+    .progress-fill.pass-progress {
+      background: linear-gradient(90deg, var(--purple), #a78bfa);
+    }
+
+    .target-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .gap.good { color: var(--green); font-weight: 800; }
+    .gap.warn { color: var(--red); font-weight: 800; }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .kpi {
+      padding: 15px 16px;
+      box-shadow: none;
+    }
+
+    .kpi-label {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .kpi-value {
+      margin-top: 5px;
+      font-size: 25px;
+      font-weight: 850;
+      letter-spacing: -0.04em;
+    }
+
+    .kpi-value small {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: 0;
+    }
+
+    .kpi-foot {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .panel { padding: 17px; }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .panel-title { font-weight: 800; }
+
+    .chart-summary {
+      margin: -2px 0 10px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .legend-item { white-space: nowrap; }
+
+    .legend-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 5px;
+      border-radius: 50%;
+      vertical-align: 1px;
+    }
+
+    .chart {
+      width: 100%;
+      min-height: 250px;
+      overflow: hidden;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #fbfdff, #f8fafc);
+    }
+
+    .chart svg {
+      display: block;
+      width: 100%;
+      height: 250px;
+    }
+
+    .chart-empty {
+      display: grid;
+      min-height: 250px;
+      place-items: center;
+      color: var(--muted);
+    }
+
+    .funnel-panel { overflow: hidden; }
+
+    .funnel {
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+      padding: 3px 2px 8px;
+      overflow-x: auto;
+    }
+
+    .stage-node {
+      min-width: 106px;
+      flex: 1 0 106px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 13px 11px;
+      background: var(--surface-soft);
+      text-align: left;
+      cursor: pointer;
+      transition: 0.16s ease;
+    }
+
+    .stage-node:hover, .stage-node.active {
+      transform: translateY(-2px);
+      border-color: #8facf0;
+      background: var(--blue-soft);
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.10);
+    }
+
+    .stage-index {
+      display: inline-grid;
+      width: 24px;
+      height: 24px;
+      place-items: center;
+      border-radius: 8px;
+      color: white;
+      background: var(--stage, var(--blue));
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .stage-name {
+      min-height: 39px;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .stage-count {
+      margin-top: 8px;
+      font-size: 27px;
+      font-weight: 850;
+      letter-spacing: -0.05em;
+    }
+
+    .stage-count small {
+      margin-left: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .stage-rate {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .stage-panel {
+      margin-top: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 15px;
+    }
+
+    .stage-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .stage-panel-title { font-weight: 850; }
+
+    .stage-panel-meta { color: var(--muted); font-size: 12px; }
+
+    .candidate-table { width: 100%; border-collapse: collapse; }
+
+    .candidate-table th, .candidate-table td {
+      padding: 10px 9px;
+      border-bottom: 1px solid #edf1f6;
+      text-align: left;
+      font-size: 12px;
+    }
+
+    .candidate-table th {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .candidate-name { font-weight: 800; }
+
+    .detail-stack {
+      display: grid;
+      align-content: start;
+      gap: 5px;
+      min-width: max-content;
+    }
+
+    .evaluation-result {
+      display: inline-block;
+      width: fit-content;
+      padding: 3px 7px;
+      border-radius: 7px;
+      color: #315790;
+      background: var(--blue-soft);
+      white-space: nowrap;
+    }
+
+    .evaluation-result.passed { color: #067647; background: #ecfdf3; }
+    .evaluation-result.failed { color: #b42318; background: #fef3f2; }
+    .evaluation-result.pending { color: #9a6700; background: #fffaeb; }
+
+    .status-chip {
+      display: inline-block;
+      max-width: 160px;
+      overflow: hidden;
+      padding: 4px 7px;
+      border-radius: 7px;
+      color: #315790;
+      background: var(--blue-soft);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .people-btn {
+      display: inline-block;
+      border: 1px solid #b8c9ec;
+      border-radius: 8px;
+      padding: 6px 8px;
+      color: var(--blue);
+      background: white;
+      cursor: pointer;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .people-btn:hover { background: var(--blue-soft); }
+
+    .detail-toggle-wrap { display: flex; justify-content: center; padding: 12px 0 4px; }
+    .detail-toggle-wrap[hidden] { display: none; }
+    .detail-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #b8c9ec;
+      border-radius: 999px;
+      padding: 7px 18px;
+      color: var(--blue);
+      background: white;
+      cursor: pointer;
+      font-weight: 750;
+      font-size: 13px;
+    }
+    .detail-toggle:hover { background: var(--blue-soft); }
+    .detail-toggle .chevron { transition: transform .18s ease; font-size: 11px; }
+    .detail-toggle.expanded .chevron { transform: rotate(180deg); }
+
+    .empty {
+      padding: 24px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .definitions {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .definition {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface-soft);
+    }
+
+    .definition strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+    }
+
+    .definition span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .interview-filter-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .interview-filter {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .interview-filter select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 9px 10px;
+      color: var(--ink);
+      background: white;
+      font: inherit;
+    }
+
+    .interviewer-multiselect,
+    .status-multiselect {
+      position: relative;
+    }
+
+    .multiselect-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 9px 10px;
+      color: var(--ink);
+      background: white;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+    }
+
+    .multiselect-trigger::after {
+      content: "⌄";
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .multiselect-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      left: 0;
+      z-index: 20;
+      display: grid;
+      gap: 2px;
+      max-height: 260px;
+      overflow-y: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 6px;
+      background: white;
+      box-shadow: 0 12px 30px rgba(23, 32, 51, 0.14);
+    }
+
+    .multiselect-menu[hidden] { display: none; }
+
+    .multiselect-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 7px;
+      padding: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 650;
+    }
+
+    .multiselect-option:hover { background: var(--blue-soft); }
+    .multiselect-option input { accent-color: var(--blue); }
+
+    .interview-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .interview-status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    .interview-status.pending::before { background: var(--amber); }
+    .interview-status.hold::before { background: var(--purple); }
+    .interview-status.failed::before { background: var(--red); }
+
+    .interview-score {
+      white-space: nowrap;
+    }
+
+    .result-tag { font-weight: 600; }
+    .result-tag.passed { color: var(--green); }
+    .result-tag.failed { color: var(--red); }
+    .result-tag.pending { color: var(--amber); }
+
+    .interview-heading-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .interview-rate-stats {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .rate-chip {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .rate-chip.passed { color: var(--green); background: var(--green-soft); }
+    .rate-chip.failed { color: var(--red); background: var(--red-soft); }
+    .rate-chip.pending { color: var(--amber); background: var(--amber-soft); }
+    .rate-total { font-size: 12px; color: var(--muted, #64748b); white-space: nowrap; }
+
+    .current-stage-cell {
+      display: grid;
+      gap: 2px;
+      white-space: nowrap;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      z-index: 10;
+      transform: translate(-50%, 16px);
+      padding: 11px 14px;
+      border-radius: 10px;
+      color: white;
+      background: #172033;
+      box-shadow: 0 14px 38px rgba(0, 0, 0, 0.22);
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.2s ease;
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 1050px) {
+      .topbar { grid-template-columns: 1fr; }
+      .filters { align-items: flex-start; }
+      .preset-row, .custom-row { justify-content: flex-start; }
+      .chart-grid { grid-template-columns: 1fr; }
+      .definitions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      .page { width: min(100% - 22px, 1500px); padding-top: 18px; }
+      .target-grid, .kpi-grid { grid-template-columns: 1fr; }
+      .target-versus { display: none; }
+      .comparison { gap: 8px; }
+      .date-field { width: 100%; justify-content: space-between; }
+      .date-field input { width: auto; min-width: 0; }
+      .custom-row { width: 100%; }
+      .candidate-table th:nth-child(3), .candidate-table td:nth-child(3) { display: none; }
+      .excellent-detail-table th:nth-child(3), .excellent-detail-table td:nth-child(3) { display: table-cell; }
+      .definitions { grid-template-columns: 1fr; }
+      .interview-filter-grid { grid-template-columns: 1fr; }
+    }
+  
+.public-banner{padding:10px 16px;background:#eef3f9;border-bottom:1px solid #d7dfeb;font-size:12px;color:#4a5b72;position:sticky;top:0;z-index:30}.public-banner a{color:#075da8;margin-left:15px}html{scroll-padding-top:70px}
+</style>
+  <style id="theme-soft">
+/* ============================================================
+   THEME 3 · SOFT CARDS  (Notion / 飞书原生气质)
+   温柔单色系(石板灰底 + 一种主蓝),大圆角、柔和分层阴影,
+   亲和易读。保留浅色卡片但整体更统一、更有呼吸感。
+   ============================================================ */
+:root{
+  --bg:#f2f4f8;
+  --surface:#ffffff;
+  --surface-soft:#f6f8fc;
+  --ink:#1f2733;
+  --muted:#6b7688;
+  --line:#e7ebf2;
+  --blue:#3b6cf6;
+  --blue-soft:#eef3ff;
+  --cyan:#3b6cf6;
+  --green:#12a150;
+  --green-soft:#e9f7ef;
+  --amber:#c47d09;
+  --amber-soft:#fdf3e2;
+  --red:#dc2626;
+  --red-soft:#fdeeee;
+  --purple:#6d5cf5;
+  --shadow:0 1px 2px rgba(31,39,51,.04), 0 8px 24px rgba(31,39,51,.06);
+}
+html,body{background:var(--bg) !important;}
+body{
+  background:var(--bg) !important;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+}
+.page{width:min(1320px,calc(100% - 44px)); padding:44px 0 80px;}
+
+.eyebrow{color:var(--blue); letter-spacing:.13em;}
+h1{font-weight:840; letter-spacing:-0.035em;}
+.live-dot{background:var(--green); box-shadow:0 0 0 5px rgba(18,161,80,.12);}
+.period-copy{border:1px solid var(--line); background:var(--surface); color:#3f5170; border-radius:9px;}
+
+/* 分段控件 */
+.job-switcher{gap:4px; padding:4px; background:var(--surface); border:1px solid var(--line); border-radius:14px; display:inline-flex; box-shadow:var(--shadow);}
+.job-tab{border:0 !important; background:transparent !important; color:var(--muted); font-weight:700; border-radius:10px; padding:8px 17px;}
+.job-tab:hover{color:var(--ink); background:transparent !important;}
+.job-tab.active{color:var(--blue) !important; background:var(--blue-soft) !important;}
+.preset,.date-field{border:1px solid var(--line); background:var(--surface); border-radius:11px; color:var(--muted); box-shadow:var(--shadow);}
+.preset:hover,.preset.active{color:var(--blue); background:var(--blue-soft); border-color:#c9d8fb;}
+.apply-btn{background:var(--blue); border-color:var(--blue); border-radius:11px; box-shadow:0 6px 16px rgba(59,108,246,.28);}
+.apply-btn:hover{background:#2f5be0;}
+
+/* 区块标题 */
+.section{margin-top:52px;}
+.section-title{font-weight:820; font-size:21px;}
+.section-title::before{width:5px; height:20px; border-radius:4px; background:var(--blue) !important;}
+.section-heading{margin-bottom:20px;}
+
+/* 卡片：大圆角 + 柔和分层阴影 */
+.target-card,.panel,.kpi{border:1px solid var(--line) !important; border-radius:20px !important; background:var(--surface) !important; box-shadow:var(--shadow) !important;}
+.panel{padding:28px;}
+.target-card::after{opacity:.6;}
+.kpi{padding:22px;}
+
+/* 漏斗 */
+.funnel{gap:12px;}
+.stage-node{border:1px solid var(--line); border-radius:18px; background:var(--surface); padding:18px 16px; box-shadow:var(--shadow);}
+.stage-node:hover,.stage-node.active{transform:translateY(-3px); border-color:#c9d8fb; background:var(--blue-soft); box-shadow:0 12px 28px rgba(59,108,246,.14);}
+.stage-index{border-radius:10px;}
+.stage-count{font-size:30px; font-weight:840;}
+.stage-name{font-weight:750;}
+
+/* 表格：行距舒展、表头浅底 */
+.candidate-table th{color:var(--muted); background:var(--surface-soft); font-weight:700; padding:12px 12px;}
+.candidate-table th:first-child{border-top-left-radius:12px; border-bottom-left-radius:12px;}
+.candidate-table th:last-child{border-top-right-radius:12px; border-bottom-right-radius:12px;}
+.candidate-table td{border-bottom:1px solid var(--line); padding:14px 12px;}
+.status-chip{background:var(--blue-soft); color:#315790; border-radius:8px;}
+.people-btn{border:1px solid #c9d8fb; color:var(--blue); border-radius:10px;}
+.people-btn:hover{background:var(--blue-soft);}
+.detail-toggle{border:1px solid #c9d8fb; color:var(--blue);}
+.detail-toggle:hover{background:var(--blue-soft);}
+
+/* 数据口径：单列通栏 */
+.definitions{display:block !important; grid-template-columns:none !important;}
+.definition{display:grid !important; grid-template-columns:180px minmax(0,1fr); gap:30px; border:0 !important; border-top:1px solid var(--line) !important; border-radius:0 !important; background:transparent !important; padding:22px 4px;}
+.definition:first-child{border-top:0 !important;}
+.definition strong{font-size:14px;}
+.definition span{line-height:1.85; font-size:13.5px;}
+
+.chart{background:var(--surface-soft); border:1px solid var(--line);}
+.progress-fill{background:linear-gradient(90deg,var(--blue),#7aa2ff) !important;}
+.progress-fill.pass-progress{background:linear-gradient(90deg,var(--purple),#a99bff) !important;}
+.comparison-side.actual{background:var(--blue-soft);}
+.multiselect-trigger,.interview-filter select{border:1px solid var(--line); border-radius:11px;}
+
+/* 页面底部规则备注：灰色小字，弱化处理 */
+.rules-footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--line);}
+.rules-footer-head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+.rules-footer-title{color:var(--muted); font-size:12px; font-weight:700; letter-spacing:.02em;}
+.rules-footer-sub{color:#9aa4b5; font-size:11.5px;}
+.rules-list{margin:0; display:grid; gap:8px;}
+.rule-item{display:grid; grid-template-columns:150px minmax(0,1fr); gap:16px; align-items:start;}
+.rule-item dt{margin:0; color:#8b95a7; font-size:11.5px; font-weight:600; line-height:1.7;}
+.rule-item dd{margin:0; color:#9aa4b5; font-size:11.5px; line-height:1.7;}
+
+@media (max-width:820px){
+  .definition{grid-template-columns:1fr; gap:8px;}
+  .rule-item{grid-template-columns:1fr; gap:2px;}
+}
+
+  </style>
+  <style id="apple-ui-upgrade">
+    :root {
+      --bg: #f5f5f7;
+      --surface: rgba(255, 255, 255, 0.82);
+      --surface-soft: rgba(247, 247, 249, 0.92);
+      --ink: #1d1d1f;
+      --muted: #6e6e73;
+      --line: rgba(0, 0, 0, 0.08);
+      --blue: #0071e3;
+      --blue-soft: #e8f2ff;
+      --cyan: #32ade6;
+      --green: #34c759;
+      --green-soft: #eaf8ee;
+      --amber: #ff9f0a;
+      --amber-soft: #fff4df;
+      --red: #ff3b30;
+      --red-soft: #fff0ef;
+      --purple: #af52de;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 18px 48px rgba(0, 0, 0, 0.07);
+      --shadow-hover: 0 24px 60px rgba(0, 0, 0, 0.11);
+    }
+
+    html { background: var(--bg) !important; scroll-behavior: smooth; }
+
+    body {
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% -8%, rgba(0, 113, 227, 0.13), transparent 30%),
+        radial-gradient(circle at 92% 3%, rgba(175, 82, 222, 0.08), transparent 25%),
+        var(--bg) !important;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .page { width: min(1380px, calc(100% - 48px)); padding: 54px 0 96px; }
+    .topbar { align-items: start; gap: 28px; margin-bottom: 34px; }
+    .eyebrow { color: var(--blue); font-size: 12px; font-weight: 700; letter-spacing: .1em; }
+    h1 { font-size: clamp(34px, 4vw, 58px); font-weight: 700; letter-spacing: -.045em; }
+    .subtitle { margin-top: 14px; gap: 8px 12px; }
+    .period-copy { border: 0; background: rgba(0, 113, 227, .08); color: #075da8; border-radius: 999px; }
+    .live-dot { background: var(--green); box-shadow: 0 0 0 5px rgba(52, 199, 89, .13); }
+
+    .job-switcher {
+      max-width: 100%;
+      margin-top: 20px;
+      padding: 5px;
+      gap: 4px;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      border: 1px solid rgba(255, 255, 255, .9);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, .66);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, .06);
+      backdrop-filter: saturate(180%) blur(22px);
+      -webkit-backdrop-filter: saturate(180%) blur(22px);
+      scrollbar-width: none;
+    }
+
+    .job-switcher::-webkit-scrollbar { display: none; }
+
+    .job-tab {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      min-height: 38px;
+      padding: 8px 16px;
+      border: 0 !important;
+      border-radius: 11px;
+      color: var(--muted);
+      background: transparent !important;
+      font-weight: 600;
+      line-height: 1;
+      text-decoration: none;
+      transition: color .18s ease, background .18s ease, transform .18s ease;
+    }
+
+    .job-tab:hover { color: var(--ink); background: rgba(0, 0, 0, .035) !important; transform: translateY(-1px); }
+    .job-tab.active { color: var(--ink) !important; background: #fff !important; box-shadow: 0 2px 10px rgba(0, 0, 0, .08); }
+    .job-tab--external { color: var(--blue); }
+    .job-tab--external::after { content: "↗"; margin-left: 6px; font-size: 12px; }
+    .job-tab:focus-visible, .preset:focus-visible, .apply-btn:focus-visible, .people-btn:focus-visible,
+    .stage-node:focus-visible, .detail-toggle:focus-visible, .multiselect-trigger:focus-visible,
+    .date-field:focus-within {
+      outline: 3px solid rgba(0, 113, 227, .28);
+      outline-offset: 2px;
+    }
+
+    .filters { gap: 10px; }
+    .preset-row, .custom-row { gap: 7px; }
+    .preset, .date-field, .multiselect-trigger, .interview-filter select {
+      border: 1px solid rgba(0, 0, 0, .07);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .78);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, .04);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .preset:hover, .preset.active { color: var(--blue); border-color: rgba(0, 113, 227, .18); background: var(--blue-soft); }
+    .apply-btn { border-color: var(--blue); border-radius: 12px; background: var(--blue); box-shadow: 0 8px 22px rgba(0, 113, 227, .22); }
+    .apply-btn:hover { background: #0077ed; transform: translateY(-1px); }
+
+    .section { margin-top: 64px; }
+    .section-heading { align-items: end; margin-bottom: 20px; }
+    .section-title { font-size: clamp(22px, 2vw, 30px); font-weight: 700; letter-spacing: -.025em; }
+    .section-title::before { display: none; }
+    .section-note { color: var(--muted); }
+
+    .panel, .target-card, .kpi {
+      border: 1px solid rgba(255, 255, 255, .9) !important;
+      border-radius: 28px !important;
+      background: var(--surface) !important;
+      box-shadow: var(--shadow) !important;
+      backdrop-filter: saturate(160%) blur(22px);
+      -webkit-backdrop-filter: saturate(160%) blur(22px);
+    }
+    .panel { padding: 30px; }
+    .target-card, .kpi { transition: transform .22s ease, box-shadow .22s ease; }
+    .target-card:hover, .kpi:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover) !important; }
+
+    .funnel { gap: 10px; }
+    .stage-node {
+      border: 1px solid rgba(0, 0, 0, .055);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, .82);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, .045);
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .stage-node:hover, .stage-node.active { transform: translateY(-3px); border-color: rgba(0, 113, 227, .13); background: #f2f8ff; box-shadow: 0 16px 34px rgba(0, 113, 227, .12); }
+    .stage-count { font-size: 32px; font-weight: 700; letter-spacing: -.035em; }
+    .stage-name { font-weight: 600; }
+
+    .chart { border: 0; border-radius: 20px; background: rgba(0, 0, 0, .025); }
+    .comparison-side.actual { background: #f2f8ff; }
+    .progress-fill { background: linear-gradient(90deg, #0071e3, #64b5ff) !important; }
+    .progress-fill.pass-progress { background: linear-gradient(90deg, #af52de, #d79cf2) !important; }
+
+    .candidate-table { border-collapse: separate; border-spacing: 0; }
+    .candidate-table th { background: rgba(0, 0, 0, .035); color: #6e6e73; font-weight: 600; }
+    .candidate-table td { border-bottom-color: rgba(0, 0, 0, .06); }
+    .candidate-table tbody tr { transition: background .16s ease; }
+    .candidate-table tbody tr:hover { background: rgba(0, 113, 227, .035); }
+    .people-btn, .detail-toggle { border-color: rgba(0, 113, 227, .18); border-radius: 999px; color: var(--blue); background: rgba(0, 113, 227, .07); }
+    .people-btn:hover, .detail-toggle:hover { background: rgba(0, 113, 227, .12); }
+    .status-chip { border-radius: 999px; background: rgba(0, 113, 227, .08); color: #075da8; }
+
+    .toast { border-radius: 999px; background: rgba(29, 29, 31, .92); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+    .rules-footer { border-top-color: rgba(0, 0, 0, .07); }
+    .rule-item dt, .rule-item dd, .rules-footer-sub { color: #76767b; font-size: 12px; }
+
+    @media (max-width: 720px) {
+      .page { width: min(100% - 24px, 1380px); padding: 28px 0 64px; }
+      h1 { font-size: 36px; }
+      .job-switcher { width: 100%; }
+      .job-tab { padding-inline: 14px; }
+      .job-tab, .preset, .date-field, .apply-btn, .people-btn, .detail-toggle, .multiselect-trigger { min-height: 44px; }
+      .funnel { scroll-snap-type: x proximity; }
+      .stage-node { scroll-snap-align: start; }
+      .panel { padding: 20px; border-radius: 22px !important; }
+      .section { margin-top: 48px; }
+      .panel, .target-card, .kpi { backdrop-filter: none; -webkit-backdrop-filter: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body><div class="public-banner">原版全栈招聘看板 · 2026-09-21 历史脱敏快照 · 非实时数据 <a href="../dashboard-case.html" target="_top">返回案例介绍 ↗</a></div>
+  <main class="page">
+    <header class="topbar">
+      <div>
+        <div id="page-eyebrow" class="eyebrow">Recruiting Progress</div>
+        <h1 id="page-title">招聘数据看板</h1>
+        <div class="subtitle">
+          <span class="live-dot"></span>
+          <span id="data-status">历史快照已加载</span>
+          <span id="period-copy" class="period-copy"></span>
+          <span>快照更新：<strong id="update-time"></strong></span>
+        </div>
+        <div id="job-switcher" class="job-switcher" aria-label="招聘岗位切换"></div>
+      </div>
+
+      <div class="filters" aria-label="时间周期筛选">
+        <div class="preset-row" id="preset-row">
+          <button class="preset" data-period="today" aria-pressed="false">今日</button>
+          <button class="preset" data-period="week" aria-pressed="false">本周</button>
+          <button class="preset" data-period="last-week" aria-pressed="false">上周</button>
+          <button class="preset active" data-period="biweek" aria-pressed="true">本双周</button>
+          <button class="preset" data-period="month" aria-pressed="false">本月</button>
+          <button class="preset" data-period="bimonth" aria-pressed="false">本双月</button>
+        </div>
+        <div class="custom-row">
+          <label class="date-field">开始 <input id="start-date" type="date"></label>
+          <label class="date-field">结束 <input id="end-date" type="date"></label>
+          <button id="apply-range" class="apply-btn">应用日期</button>
+        </div>
+      </div>
+    </header>
+
+    <section id="fullstack-funnel" class="section">
+      <div class="section-heading">
+        <h2 class="section-title">招聘阶段漏斗</h2>
+        <div class="section-note">点击任一阶段，查看该周期全部人选</div>
+      </div>
+      <article class="panel funnel-panel">
+        <div id="funnel" class="funnel"></div>
+        <div id="stage-panel" class="stage-panel"></div>
+      </article>
+    </section>
+
+    <section id="fullstack-trend" class="section">
+      <div class="section-heading">
+        <h2 class="section-title">招聘进展趋势</h2>
+        <div class="section-note">按所选时间周期汇总，不拆分具体日期</div>
+      </div>
+      <div class="chart-grid">
+        <article class="panel">
+          <div class="panel-head">
+            <div id="eval-chart-title" class="panel-title">渠道进入简历评估与评估通过 · 所选周期汇总</div>
+            <div class="legend">
+              <span class="legend-item"><i class="legend-dot" style="background:#2563eb"></i>HR寻访</span>
+              <span class="legend-item"><i class="legend-dot" style="background:#d97706"></i>猎头</span>
+            </div>
+          </div>
+          <div id="eval-chart-note" class="chart-summary"></div>
+          <div id="volume-chart" class="chart"></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="fullstack-goals-section" class="section">
+      <div class="section-heading">
+        <h2 class="section-title">目标与完成度</h2>
+        <div class="section-note">目标统一在左，所选周期实际完成统一在右</div>
+      </div>
+      <div class="target-grid">
+        <article class="target-card">
+          <div class="target-head">
+            <div class="target-label">既定目标</div>
+            <div class="formula-pill">左侧</div>
+          </div>
+          <div class="target-metric-list">
+            <div class="target-metric">
+              <div class="target-metric-name">简历推荐量</div>
+              <div class="comparison-value"><span id="review-target">0</span><small>份</small></div>
+              <div id="review-target-pill" class="section-note" style="text-align:left">0个工作日 · 10份/日</div>
+            </div>
+            <div class="target-metric">
+              <div id="pass-target-name" class="target-metric-name">评估通过量</div>
+              <div class="comparison-value"><span id="pass-target">0</span><small>份</small></div>
+              <div class="section-note" style="text-align:left">通过率目标 ≥ 50%</div>
+            </div>
+          </div>
+        </article>
+
+        <div class="target-versus" aria-hidden="true">VS</div>
+
+        <article class="target-card actual-card">
+          <div class="target-head">
+            <div class="target-label">实际完成</div>
+            <div class="formula-pill">右侧</div>
+          </div>
+          <div class="target-metric-list">
+            <div class="target-metric">
+              <div class="target-metric-name">简历推荐量</div>
+              <div class="comparison-value"><span id="review-actual">0</span><small>份</small></div>
+              <div class="progress-track"><div id="review-progress" class="progress-fill"></div></div>
+              <div class="target-foot">
+                <span id="review-completion">完成率 0%</span>
+                <span id="review-gap" class="gap warn">差距 0份</span>
+              </div>
+            </div>
+            <div class="target-metric">
+              <div id="pass-actual-name" class="target-metric-name">评估通过量</div>
+              <div class="comparison-value"><span id="pass-actual">0</span><small id="pass-rate">0% 通过率</small></div>
+              <div class="progress-track"><div id="pass-progress" class="progress-fill pass-progress"></div></div>
+              <div class="target-foot">
+                <span id="pass-completion">通过率目标完成度 0%</span>
+                <span id="pass-rate-gap" class="gap warn">通过率差距 0个百分点</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="fullstack-interview-section" class="section">
+      <div class="section-heading">
+        <h2 class="section-title">面试官进展</h2>
+        <div class="interview-heading-meta">
+          <div id="interview-rate-stats" class="interview-rate-stats"></div>
+          <div id="interview-result-count" class="section-note">0位人选</div>
+        </div>
+      </div>
+      <article class="panel">
+        <div class="interview-filter-grid">
+          <div class="interview-filter">面试官
+            <div id="interviewer-multiselect" class="interviewer-multiselect">
+              <button id="interviewer-filter-trigger" class="multiselect-trigger" type="button" aria-expanded="false"
+                aria-label="面试官筛选" aria-controls="interviewer-filter-menu">
+                <span id="interviewer-filter-label">全部</span>
+              </button>
+              <div id="interviewer-filter-menu" class="multiselect-menu" role="group" aria-label="面试官选项" hidden>
+                <label class="multiselect-option"><input type="checkbox" name="interviewer-filter" value="全部" checked>全部</label>
+                <label class="multiselect-option"><input type="checkbox" name="interviewer-filter" value="面试官01">面试官01</label>
+                <label class="multiselect-option"><input type="checkbox" name="interviewer-filter" value="面试官03">面试官03</label>
+                <label class="multiselect-option"><input type="checkbox" name="interviewer-filter" value="面试官02">面试官02</label>
+                <label class="multiselect-option"><input type="checkbox" name="interviewer-filter" value="面试官04">面试官04</label>
+                <label class="multiselect-option"><input type="checkbox" name="interviewer-filter" value="面试官05">面试官05</label>
+              </div>
+            </div>
+          </div>
+          <div class="interview-filter">面试结果
+            <div id="status-multiselect" class="status-multiselect">
+              <button id="status-filter-trigger" class="multiselect-trigger" type="button" aria-expanded="false"
+                aria-label="面试结果筛选" aria-controls="status-filter-menu">
+                <span id="status-filter-label">全部</span>
+              </button>
+              <div id="status-filter-menu" class="multiselect-menu" role="group" aria-label="面试结果选项" hidden>
+                <label class="multiselect-option"><input type="checkbox" name="status-filter" value="全部" checked>全部</label>
+                <label class="multiselect-option"><input type="checkbox" name="status-filter" value="通过">通过</label>
+                <label class="multiselect-option"><input type="checkbox" name="status-filter" value="不通过">不通过</label>
+                <label class="multiselect-option"><input type="checkbox" name="status-filter" value="pending">pending</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="overflow:auto">
+          <table class="candidate-table">
+            <thead><tr><th>人选</th><th>一面评分／结果</th><th>二面评分／结果</th><th id="interview-final-head">终面评分／结果</th><th>当前阶段</th><th>跳转</th></tr></thead>
+            <tbody id="interview-rows"></tbody>
+          </table>
+        </div>
+        <div id="interview-empty" class="empty" hidden>所选周期暂无符合条件的面试记录</div>
+        <div id="interview-toggle-wrap" class="detail-toggle-wrap" hidden>
+          <button id="interview-toggle" class="detail-toggle" type="button" aria-expanded="false"></button>
+        </div>
+      </article>
+    </section>
+    <footer class="rules-footer">
+      <div class="rules-footer-head">
+        <span class="rules-footer-title">数据口径说明</span>
+        <span id="definition-note" class="rules-footer-sub">正式版本接入飞书招聘后，示意数据将被替换</span>
+      </div>
+      <dl class="rules-list">
+        <div class="rule-item"><dt id="stage-count-rule-title">阶段简历数</dt><dd id="stage-count-rule-copy">简历入库、评估通过及面试按飞书原始报表“进入阶段”口径统计；简历评估会剔除已安排面试官04评估、面试官04尚未提交结论且投递已终止的简历；全栈HR面以面试官06或面试官07在HR面环节正式提交面评作为计入门槛，面评提交时间须在2026-07-01至所选结束日期内。满足门槛后，进入Offer沟通、待入职或已入职仍计入HR面；已入职同时计入已入职，两处允许重复。没有两位指定面试官在统计期内正式提交面评的人选，即使进入Offer沟通、待入职或已入职也不计入这两项；按人选去重。</dd></div>
+        <div class="rule-item"><dt id="evaluation-pass-rule-title">评估通过</dt><dd id="evaluation-pass-rule-copy">投递记录从“简历评估”进入“评估通过”阶段，按简历份数统计。</dd></div>
+        <div class="rule-item"><dt id="technical-stage-rule-title">技术一面 / 技术二面 / 技术终面</dt><dd id="technical-stage-rule-copy">面试轮次按面试官统计：面试官01、面试官02、面试官03计入技术一面，面试官04计入技术二面，面试官05计入技术终面。所选周期内，面试邀约/安排创建时间、计划面试时间、面试结束时间或面评提交时间任一落入周期即计入；同一人同一轮去重。</dd></div>
+        <div class="rule-item"><dt>公开脱敏</dt><dd>姓名、面试官和所有业务标识均已替换为匿名编号，不保留飞书链接。</dd></div>
+      </dl>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="./fullstack-data.js"></script>
+  <script>
+    const STAGES = [
+      { id: "screen", name: "简历入库", color: "#64748b" },
+      { id: "evaluation", name: "简历评估", color: "#2563eb" },
+      { id: "invite", name: "评估通过", color: "#0891b2" },
+      { id: "interview1", name: "技术一面", color: "#0f9f6e" },
+      { id: "interview2", name: "技术二面", color: "#16a34a" },
+      { id: "executive", name: "技术终面", color: "#7c3aed" },
+      { id: "hr", name: "HR面", color: "#9333ea" },
+      { id: "offer", name: "Offer沟通", color: "#d97706" },
+      { id: "pending", name: "待入职", color: "#ea580c" },
+      { id: "onboard", name: "已入职", color: "#16a34a" }
+    ];
+    const FUNNEL_STAGE_INDEXES = STAGES
+      .map((stage, index) => ({ stage, index }))
+      .filter(({ stage }) => !["offer", "pending"].includes(stage.id))
+      .map(({ index }) => index);
+
+    const SOURCES = ["猎头", "内推", "Boss", "脉脉", "GitHub"];
+    const FULLSTACK_JOB_ID = "9000000000000012994";
+    const QA_JOB_ID = "9000000000000013001";
+    const EXCELLENT_JOB_ID = "excellent-resumes-9000000000000013002";
+    const FULLSTACK_ONBOARD_CUMULATIVE_START_DATE = "2026-07-01";
+    const FEISHU_HR_STAGE_ID = "9000000000000012774";
+    const FULL_VIEW_JOB_IDS = new Set([FULLSTACK_JOB_ID, EXCELLENT_JOB_ID]);
+    const INTERVIEW_VIEW_JOB_IDS = new Set([FULLSTACK_JOB_ID, QA_JOB_ID, EXCELLENT_JOB_ID]);
+    const EXCELLENT_VISIBLE_INTERVIEW_STAGE_INDEXES = new Set([3, 4]);
+    const EXCELLENT_RESUME_EVALUATORS = new Map([
+      ["9000000000000012759", "面试官09"],
+      ["9000000000000013003", "面试官10"]
+    ]);
+    const EXCELLENT_RESUME_EVALUATOR_IDS = new Set(EXCELLENT_RESUME_EVALUATORS.keys());
+    const EXCELLENT_SOURCE_JOBS = new Map([
+      ["9000000000000013004", "Agentic Engineering 全栈实习生"],
+      ["9000000000000013005", "（通用）Agent 算法实习生"]
+    ]);
+    const EXCELLENT_INTERVIEWER_STAGE_BY_SOURCE_JOB = new Map([
+      ["9000000000000013004", new Map([
+        ["面试官08", 3],
+        ["面试官02", 3],
+        ["面试官03", 3],
+        ["面试官09", 4],
+        ["面试官06", 6]
+      ])],
+      ["9000000000000013005", new Map([
+        ["面试官10", 3],
+        ["面试官11", 3],
+        ["面试官06", 6]
+      ])]
+    ]);
+
+    function funnelStageIndexesForJob(job = currentJob) {
+      return job?.id === EXCELLENT_JOB_ID
+        ? FUNNEL_STAGE_INDEXES.filter(index => STAGES[index]?.id !== "executive")
+        : FUNNEL_STAGE_INDEXES;
+    }
+
+    function isVisibleInterviewStageForJob(stageIndex, job = currentJob) {
+      return job?.id !== EXCELLENT_JOB_ID || EXCELLENT_VISIBLE_INTERVIEW_STAGE_INDEXES.has(stageIndex);
+    }
+
+    function stageNameForJob(stageIndex, job = currentJob) {
+      if (job?.id === EXCELLENT_JOB_ID && STAGES[stageIndex]?.id === "invite") return "简历通过";
+      if (job?.id === EXCELLENT_JOB_ID && STAGES[stageIndex]?.id === "executive") return "综合面试";
+      return STAGES[stageIndex]?.name || "—";
+    }
+    // 三轮按面试官归类，不按飞书面试环节名称归类。
+    const TECHNICAL_STAGE_OWNERS = new Map([
+      [3, new Set(["面试官01", "面试官02", "面试官03"])],
+      [4, new Set(["面试官04"])],
+      [5, new Set(["面试官05"])]
+    ]);
+    const TRACKED_INTERVIEWERS = new Set(
+      [...TECHNICAL_STAGE_OWNERS.values()].flatMap(owners => [...owners])
+    );
+    const HR_EVALUATOR_OPEN_IDS = new Set([
+      "9000000000000012860", // 面试官06
+      "9000000000000012766"  // 面试官07
+    ]);
+    const HR_EVALUATOR_NAMES = new Set(["面试官06", "面试官07"]);
+    const INTERVIEWER_TO_STAGE = new Map();
+    TECHNICAL_STAGE_OWNERS.forEach((owners, stageIndex) => {
+      owners.forEach(name => INTERVIEWER_TO_STAGE.set(name, stageIndex));
+    });
+    const TERMINATION_INTERVIEWER_STAGE = new Map([
+      ["面试官02", "技术一面"],
+      ["面试官03", "技术一面"],
+      ["面试官04", "技术二面"],
+      ["面试官05", "技术三面"]
+    ]);
+    // 业务确认的状态修正：不改飞书源数据，仅调整看板展示。
+    const STATUS_OVERRIDES = new Map([
+      ["9000000000000010867", "待入职"]
+    ]);
+    const STAGE_INDEX_TO_ROUND = new Map([[3, "一面"], [4, "二面"], [5, "三面"]]);
+    const INTERVIEWER_STAGE_INDEXES = new Set([3, 4, 5]);
+    function excellentSourceJobIdForApplication(applicationId, job = currentJob) {
+      const application = (Array.isArray(job?.apps) ? job.apps : [])
+        .find(item => String(item?.[0] || "") === String(applicationId || ""));
+      return String(application?.[16] || "");
+    }
+    function excellentStageIndexForRecord(record, applicationId, job = currentJob) {
+      const sourceJobId = excellentSourceJobIdForApplication(applicationId, job);
+      return EXCELLENT_INTERVIEWER_STAGE_BY_SOURCE_JOB
+        .get(sourceJobId)?.get(String(record?.[0] || "").trim());
+    }
+    function excellentStageIndexesForInterview(interview, job = currentJob) {
+      const applicationId = String(interview?.[1] || "");
+      return new Set((Array.isArray(interview?.[6]) ? interview[6] : [])
+        .map(record => excellentStageIndexForRecord(record, applicationId, job))
+        .filter(index => Number.isInteger(index)));
+    }
+    function trackedInterviewersForJob(job) {
+      if (job?.id !== EXCELLENT_JOB_ID) return TRACKED_INTERVIEWERS;
+      const names = new Set();
+      EXCELLENT_INTERVIEWER_STAGE_BY_SOURCE_JOB.forEach(stageByInterviewer => {
+        stageByInterviewer.forEach((stageIndex, name) => {
+          if (isVisibleInterviewStageForJob(stageIndex, job)) names.add(name);
+        });
+      });
+      return names;
+    }
+    // 判定某场面试是否含任一阶段负责人，用于圈定候选人范围。
+    function interviewHasTracked(interview, job = currentJob) {
+      if (job?.id === EXCELLENT_JOB_ID) {
+        return [...excellentStageIndexesForInterview(interview, job)]
+          .some(stageIndex => isVisibleInterviewStageForJob(stageIndex, job));
+      }
+      return (Array.isArray(interview[6]) ? interview[6] : [])
+        .some(record => TRACKED_INTERVIEWERS.has(String(record[0] || "")));
+    }
+    const TODAY = startOfDay(new Date("2026-09-21T12:00:00+08:00"));
+    const LIVE_DATA = window.FULLSTACK_DASHBOARD_DATA || null;
+    const LIVE_JOBS = Array.isArray(LIVE_DATA?.jobs) && LIVE_DATA.jobs.length
+      ? LIVE_DATA.jobs
+      : LIVE_DATA?.job ? [LIVE_DATA.job] : [];
+    const INITIAL_PARAMS = new URLSearchParams(window.location.search);
+    const INITIAL_DATE_RANGE = initialRangeFromParams(INITIAL_PARAMS);
+    let currentJob = LIVE_JOBS.find(job => job.id === INITIAL_PARAMS.get("job"))
+      || LIVE_JOBS.find(job => job.id === LIVE_DATA?.defaultJobId)
+      || LIVE_JOBS[0]
+      || null;
+    let CANDIDATES = buildCandidates(currentJob);
+    const IS_LIVE_DATA = LIVE_JOBS.length > 0;
+    let activeStage = 2;
+    let currentRange = INITIAL_DATE_RANGE || defaultRangeForJob();
+    let toastTimer = null;
+
+    function startOfDay(value) {
+      const date = new Date(value);
+      date.setHours(0, 0, 0, 0);
+      return date;
+    }
+
+    function endOfDay(value) {
+      const date = new Date(value);
+      date.setHours(23, 59, 59, 999);
+      return date;
+    }
+
+    function addDays(value, days) {
+      const date = new Date(value);
+      date.setDate(date.getDate() + days);
+      return date;
+    }
+
+    function formatDate(value) {
+      const date = new Date(value);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    }
+
+    function formatDateTime(value) {
+      if (!value) return "—";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "—";
+      return `${formatDate(date)} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+    }
+
+    function initialRangeFromParams(params) {
+      const startValue = params.get("start");
+      const endValue = params.get("end");
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(startValue || "") || !/^\d{4}-\d{2}-\d{2}$/.test(endValue || "")) return null;
+      const start = startOfDay(`${startValue}T00:00:00`);
+      const end = endOfDay(`${endValue}T00:00:00`);
+      if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return null;
+      if (formatDate(start) !== startValue || formatDate(end) !== endValue || start > end) return null;
+      return [start, end];
+    }
+
+    function mondayOf(value) {
+      const date = startOfDay(value);
+      const shift = (date.getDay() + 6) % 7;
+      return addDays(date, -shift);
+    }
+
+    function bimonthStart(value) {
+      const date = new Date(value);
+      const startMonth = date.getMonth() % 2 === 0 ? date.getMonth() : date.getMonth() - 1;
+      return new Date(date.getFullYear(), startMonth, 1);
+    }
+
+    function bimonthEnd(value) {
+      const start = bimonthStart(value);
+      return endOfDay(new Date(start.getFullYear(), start.getMonth() + 2, 0));
+    }
+
+    function presetRange(key) {
+      if (key === "today") return [startOfDay(TODAY), endOfDay(TODAY)];
+      if (key === "week") return [mondayOf(TODAY), endOfDay(TODAY)];
+      if (key === "last-week") {
+        const thisMonday = mondayOf(TODAY);
+        return [addDays(thisMonday, -7), endOfDay(addDays(thisMonday, -1))];
+      }
+      if (key === "month") return [new Date(TODAY.getFullYear(), TODAY.getMonth(), 1), endOfDay(TODAY)];
+      if (key === "bimonth") return [bimonthStart(TODAY), endOfDay(TODAY)];
+      return [addDays(TODAY, -13), endOfDay(TODAY)];
+    }
+
+    function defaultRangeForJob() {
+      if (currentJob?.id === EXCELLENT_JOB_ID
+          && Array.isArray(currentJob.dateRange)
+          && currentJob.dateRange.length === 2) {
+        return [
+          startOfDay(new Date(`${currentJob.dateRange[0]}T00:00:00+08:00`)),
+          endOfDay(new Date(`${currentJob.dateRange[1]}T00:00:00+08:00`)),
+        ];
+      }
+      return presetRange("biweek");
+    }
+
+    function setActivePreset(period) {
+      document.querySelectorAll(".preset").forEach(item => {
+        const isActive = Boolean(period) && item.dataset.period === period;
+        item.classList.toggle("active", isActive);
+        item.setAttribute("aria-pressed", String(isActive));
+      });
+    }
+
+    function within(date, start, end) {
+      return date && date >= startOfDay(start) && date <= endOfDay(end);
+    }
+
+    // 按面试官直接归入技术一/二/终面。
+    // 周期落点：邀约/安排创建、计划面试、面试结束、面评提交任一落在周期内即计入。
+    function interviewTimes(interview) {
+      return [interview[7], interview[2], interview[8], interview[9]]
+        .map(value => Number(value || 0))
+        .filter((value, index, values) => value && values.indexOf(value) === index);
+    }
+    // 判断面试先后只看安排与面试发生时间，避免较晚补交面评改变“最后一轮”。
+    function interviewSequenceTime(interview) {
+      return Math.max(Number(interview[7] || 0), Number(interview[2] || 0), Number(interview[8] || 0));
+    }
+    // 一场面试的安排时间或面试实际时间，任一落在 [start,end] 内即视为“在周期内”
+    function interviewInRange(interview, start, end) {
+      return interviewTimes(interview).some(t => within(new Date(t), start, end));
+    }
+    function interviewerStageDates(job) {
+      const map = new Map();
+      const interviews = Array.isArray(job?.interviews) ? job.interviews : [];
+      interviews.forEach(interview => {
+        const applicationId = String(interview[1] || "");
+        if (!applicationId) return;
+        const times = interviewTimes(interview);
+        if (!times.length) return;
+        const perApp = map.get(applicationId) || {};
+        const stageIndexes = job?.id === EXCELLENT_JOB_ID
+          ? excellentStageIndexesForInterview(interview, job)
+          : new Set((Array.isArray(interview[6]) ? interview[6] : [])
+            .map(record => INTERVIEWER_TO_STAGE.get(String(record[0] || "")))
+            .filter(Boolean));
+        stageIndexes.forEach(stageIndex => {
+          const list = perApp[stageIndex] || (perApp[stageIndex] = []);
+          times.forEach(t => { if (!list.includes(t)) list.push(t); });
+        });
+        map.set(applicationId, perApp);
+      });
+      return map;
+    }
+
+    function allInterviewDatesByApp(job) {
+      const map = new Map();
+      const interviews = Array.isArray(job?.interviews) ? job.interviews : [];
+      interviews.forEach(interview => {
+        const applicationId = String(interview[1] || "");
+        if (!applicationId) return;
+        const list = map.get(applicationId) || [];
+        interviewTimes(interview).forEach(time => {
+          if (!list.includes(time)) list.push(time);
+        });
+        map.set(applicationId, list);
+      });
+      return map;
+    }
+
+    function submittedHrEvaluationDatesByApp(job) {
+      const map = new Map();
+      const interviews = Array.isArray(job?.interviews) ? job.interviews : [];
+      interviews.forEach(interview => {
+        const isHrInterview = String(interview[3] || "") === FEISHU_HR_STAGE_ID
+          || String(interview[4] || "").trim() === "HR面";
+        if (!isHrInterview) return;
+        const records = Array.isArray(interview[6]) ? interview[6] : [];
+        const hasSubmittedHrEvaluation = records.some(record => {
+          const evaluatorName = String(record[0] || "").trim();
+          const evaluatorId = String(record[4] || "");
+          const isTargetEvaluator = evaluatorId
+            ? HR_EVALUATOR_OPEN_IDS.has(evaluatorId)
+            : HR_EVALUATOR_NAMES.has(evaluatorName);
+          return isTargetEvaluator && Number(record[2] || 0) === 1;
+        });
+        if (!hasSubmittedHrEvaluation) return;
+        const applicationId = String(interview[1] || "");
+        if (!applicationId) return;
+        const submittedTime = Number(interview[9] || interview[8] || interview[2] || interview[7] || 0);
+        if (!submittedTime) return;
+        const dates = map.get(applicationId) || [];
+        if (!dates.includes(submittedTime)) dates.push(submittedTime);
+        map.set(applicationId, dates);
+      });
+      return map;
+    }
+
+    // 已终止人选按终止前时间最晚的指定面试官，补充显示终止所在轮次。
+    function terminationStageByApp(job) {
+      const map = new Map();
+      const interviews = Array.isArray(job?.interviews) ? job.interviews : [];
+      interviews.forEach(interview => {
+        const applicationId = String(interview[1] || "");
+        if (!applicationId) return;
+        const interviewTime = interviewSequenceTime(interview);
+        if (!interviewTime) return;
+        if (job?.id === EXCELLENT_JOB_ID) {
+          excellentStageIndexesForInterview(interview, job).forEach(stageIndex => {
+            const existing = map.get(applicationId);
+            if (!existing || interviewTime > existing.time) {
+              map.set(applicationId, { time: interviewTime, stageName: stageNameForJob(stageIndex, job) });
+            }
+          });
+          return;
+        }
+        (Array.isArray(interview[6]) ? interview[6] : []).forEach(record => {
+          const stageName = TERMINATION_INTERVIEWER_STAGE.get(String(record[0] || ""));
+          if (!stageName) return;
+          const existing = map.get(applicationId);
+          if (!existing || interviewTime > existing.time) {
+            map.set(applicationId, { time: interviewTime, stageName });
+          }
+        });
+      });
+      return map;
+    }
+
+    function buildCandidates(job) {
+      const applications = job?.apps;
+      if (!Array.isArray(applications)) return buildDemoCandidates();
+      if (!applications.length) return [];
+
+      const stageDatesByApp = interviewerStageDates(job);
+      const allInterviewDates = allInterviewDatesByApp(job);
+      const submittedHrEvaluationDates = submittedHrEvaluationDatesByApp(job);
+      const terminationStages = terminationStageByApp(job);
+      return applications.map((application, index) => {
+        const applicationId = String(application[0] || "");
+        const talentId = String(application[1] || "");
+        const rawEntryValues = Array.isArray(application[8]) ? application[8] : [];
+        const rawEntries = STAGES.map((_, stageIndex) => {
+          const timestamp = Number(rawEntryValues[stageIndex] || 0);
+          return timestamp ? new Date(timestamp) : undefined;
+        });
+        const entries = STAGES.map((_, stageIndex) => {
+          const date = rawEntries[stageIndex];
+          return date ? new Date(date) : undefined;
+        });
+        // 技术面(3/4/5)由对应面试官记录判定，覆盖飞书阶段时间。
+        // interviewDates[stageIndex] 保留该阶段“全部面试发生时间”，用于按周期判定；
+        // entries[stageIndex] 取最早一场作为进度/排序的代表日期。
+        const stageDates = stageDatesByApp.get(applicationId);
+        const interviewDates = {};
+        let interviewerTopStage = 0;
+        const mappedInterviewStageIndexes = job?.id === EXCELLENT_JOB_ID
+          ? new Set([3, 4, 6])
+          : INTERVIEWER_STAGE_INDEXES;
+        mappedInterviewStageIndexes.forEach(stageIndex => {
+          const times = stageDates ? stageDates[stageIndex] : undefined;
+          if (times && times.length) {
+            const sorted = [...times].sort((a, b) => a - b);
+            interviewDates[stageIndex] = sorted.map(time => new Date(time));
+            entries[stageIndex] = new Date(sorted[0]);
+            if (stageIndex > interviewerTopStage) interviewerTopStage = stageIndex;
+          } else {
+            entries[stageIndex] = undefined;
+          }
+        });
+        const sourceType = Number(application[10] || 0);
+        const sourceName = String(application[11] || "");
+        const talentName = String(application[12] || "").trim();
+        const offerSendTime = Number(application[13] || 0);
+        const offerAcceptTime = Number(application[14] || 0);
+        const cleanApplicationId = /^\d+$/.test(applicationId) ? applicationId : "";
+        const cleanTalentId = /^\d+$/.test(talentId) ? talentId : "";
+        const feishuStage = Math.max(0, Math.min(STAGES.length - 1, Number(application[5]) || 0));
+        // 阶段进度取飞书阶段与“面试官口径到达的最高面试阶段”的较大值
+        const currentStage = Math.max(feishuStage, interviewerTopStage);
+        return {
+          id: cleanApplicationId || `LIVE-${index}`,
+          talentId: cleanTalentId || `LIVE-TALENT-${index}`,
+          name: talentName || `简历 ${cleanApplicationId ? cleanApplicationId.slice(-4) : String(index + 1).padStart(4, "0")}`,
+          source: sourceType === 10001 ? "猎头" : "HR寻访",
+          sourceDetail: sourceName,
+          createdAt: Number(application[2] || 0) ? new Date(Number(application[2])) : undefined,
+          rawEntries,
+          entries,
+          interviewDates,
+          allInterviewDates: (allInterviewDates.get(applicationId) || []).map(time => new Date(time)),
+          hrEvaluationDates: (submittedHrEvaluationDates.get(applicationId) || []).map(time => new Date(time)),
+          feishuStage,
+          currentStage,
+          reachedStages: Array.isArray(application[6]) ? application[6].map(Number) : [],
+          activeStatus: Number(application[3] || 0),
+          excludeFromResumeEvaluation: Number(application[15] || 0) === 1,
+          jobId: String(application[16] || ""),
+          terminationStage: terminationStages.get(applicationId)?.stageName || "",
+          offerSendTime: offerSendTime ? new Date(offerSendTime) : undefined,
+          offerAcceptTime: offerAcceptTime ? new Date(offerAcceptTime) : undefined,
+          peopleLink: cleanApplicationId && cleanTalentId
+            ? ""
+            : ""
+        };
+      });
+    }
+
+    function buildDemoCandidates() {
+      const records = [];
+      let serial = 1;
+      const firstDay = addDays(TODAY, -61);
+      for (let dayOffset = 0; dayOffset < 62; dayOffset += 1) {
+        const created = addDays(firstDay, dayOffset);
+        const weekday = created.getDay() !== 0 && created.getDay() !== 6;
+        const dailyVolume = weekday ? 18 + ((dayOffset * 7) % 4) : 6 + (dayOffset % 3);
+        for (let index = 0; index < dailyVolume; index += 1) {
+          const score = (serial * 173 + dayOffset * 41 + index * 29) % 1000;
+          let plannedStage = 0;
+          if (score < 880) plannedStage = 1;
+          if (score < 520) plannedStage = 2;
+          if (score < 350) plannedStage = 3;
+          if (score < 200) plannedStage = 4;
+          if (score < 110) plannedStage = 5;
+          if (score < 25) plannedStage = 6;
+          if (score < 17) plannedStage = 7;
+          if (score < 10) plannedStage = 8;
+          if (score < 6) plannedStage = 9;
+
+          const entries = [new Date(created)];
+          const delays = [0, 1, 2, 4, 6, 9, 11, 14, 18, 23];
+          for (let stageIndex = 1; stageIndex <= plannedStage; stageIndex += 1) {
+            const delayVariation = (serial + stageIndex) % 2;
+            const entered = addDays(created, delays[stageIndex] + delayVariation);
+            if (entered <= TODAY) entries[stageIndex] = entered;
+          }
+
+          const currentStage = entries.reduce((last, date, idx) => date ? idx : last, 0);
+          records.push({
+            id: `DEMO-${String(serial).padStart(4, "0")}`,
+            talentId: `DEMO-TALENT-${String(serial).padStart(4, "0")}`,
+            name: `示例简历 ${String(serial).padStart(3, "0")}`,
+            source: SOURCES[(serial + dayOffset) % SOURCES.length],
+            entries,
+            currentStage,
+            activeStatus: 1
+          });
+          serial += 1;
+        }
+      }
+      return records;
+    }
+
+    const HR_MERGED_STAGE_INDEXES = ["hr", "offer", "pending"]
+      .map(id => STAGES.findIndex(stage => stage.id === id));
+    const HR_TIME_STAGE_INDEXES = ["offer", "pending"]
+      .map(id => STAGES.findIndex(stage => stage.id === id));
+
+    function submittedHrEvaluationDatesInWindow(candidate, range = currentRange) {
+      const start = startOfDay(new Date("2026-07-01T00:00:00+08:00"));
+      const end = endOfDay(range[1]);
+      return (Array.isArray(candidate.hrEvaluationDates) ? candidate.hrEvaluationDates : [])
+        .filter(date => date && date >= start && date <= end);
+    }
+
+    function isActiveHrFlow(candidate) {
+      const hrIndex = STAGES.findIndex(stage => stage.id === "hr");
+      const onboardIndex = STAGES.findIndex(stage => stage.id === "onboard");
+      if (currentJob?.id === FULLSTACK_JOB_ID) {
+        return submittedHrEvaluationDatesInWindow(candidate).length > 0;
+      }
+      const hasReachedHr = candidate.currentStage >= hrIndex
+        || HR_MERGED_STAGE_INDEXES.some(index => Boolean(candidate.entries[index]));
+      return candidate.feishuStage !== onboardIndex
+        && hasReachedHr;
+    }
+
+    function hrQualifyingDates(candidate, range = currentRange) {
+      const interviewDates = Array.isArray(candidate.allInterviewDates) ? candidate.allInterviewDates : [];
+      const hrIndex = STAGES.findIndex(stage => stage.id === "hr");
+      const offerIndex = STAGES.findIndex(stage => stage.id === "offer");
+      const pendingIndex = STAGES.findIndex(stage => stage.id === "pending");
+      const stageDates = [candidate.entries[hrIndex], ...HR_TIME_STAGE_INDEXES.map(index => candidate.entries[index])];
+      // HR 面从 2026-07-01 开始累计，当前选择的结束日期作为累计截止日。
+      const start = startOfDay(new Date("2026-07-01T00:00:00+08:00"));
+      const end = endOfDay(range[1]);
+      if (currentJob?.id === FULLSTACK_JOB_ID) {
+        const submittedHrEvaluationDates = submittedHrEvaluationDatesInWindow(candidate, range);
+        if (!submittedHrEvaluationDates.length) return [];
+        return [
+          ...submittedHrEvaluationDates,
+          candidate.entries[offerIndex],
+          candidate.entries[pendingIndex],
+        ]
+          .filter(date => date && date >= start && date <= end);
+      }
+      return [...interviewDates, ...stageDates]
+        .filter(date => date && date >= start && date <= end);
+    }
+
+    function hrMergedStageDate(candidate, range = currentRange) {
+      const dates = hrQualifyingDates(candidate, range);
+      if (dates.length) return new Date(Math.max(...dates.map(date => date.getTime())));
+      const currentStageDates = HR_MERGED_STAGE_INDEXES
+        .map(index => candidate.entries[index])
+        .filter(Boolean);
+      return currentStageDates.length
+        ? new Date(Math.max(...currentStageDates.map(date => date.getTime())))
+        : undefined;
+    }
+
+    function excellentEvaluationRecords(candidate) {
+      if (currentJob?.id !== EXCELLENT_JOB_ID) return [];
+      return (Array.isArray(currentJob.evaluations) ? currentJob.evaluations : []).filter(record =>
+        String(record?.[0] || "") === String(candidate.id) &&
+        EXCELLENT_RESUME_EVALUATOR_IDS.has(String(record?.[1] || ""))
+      );
+    }
+
+    function excellentEvaluationSubmitted(candidate, range = currentRange) {
+      return excellentEvaluationRecords(candidate).some(record =>
+        Number(record?.[2] || 0) === 1 &&
+        within(new Date(Number(record?.[5] || record?.[4] || 0)), range[0], range[1])
+      );
+    }
+
+    function excellentEvaluationSubmittedDate(candidate, range = currentRange) {
+      const times = excellentEvaluationRecords(candidate)
+        .filter(record =>
+          Number(record?.[2] || 0) === 1 &&
+          within(new Date(Number(record?.[5] || record?.[4] || 0)), range[0], range[1])
+        )
+        .map(record => Number(record?.[5] || record?.[4] || 0))
+        .filter(Boolean);
+      return times.length ? new Date(Math.min(...times)) : undefined;
+    }
+
+    function excellentEvaluationDisplay(candidate) {
+      const latestByEvaluator = new Map();
+      excellentEvaluationRecords(candidate).forEach(record => {
+        const evaluatorId = String(record?.[1] || "");
+        const timestamp = Number(record?.[5] || record?.[4] || 0);
+        const existing = latestByEvaluator.get(evaluatorId);
+        const existingTimestamp = Number(existing?.[5] || existing?.[4] || 0);
+        if (!existing || timestamp >= existingTimestamp) latestByEvaluator.set(evaluatorId, record);
+      });
+      return [...EXCELLENT_RESUME_EVALUATORS.entries()]
+        .filter(([evaluatorId]) => latestByEvaluator.has(evaluatorId))
+        .map(([evaluatorId, name]) => {
+          const record = latestByEvaluator.get(evaluatorId);
+          const commitStatus = Number(record?.[2] || 0);
+          const conclusion = Number(record?.[3] || 0);
+          if (commitStatus !== 1) return { name, result: "待评估", tone: "pending" };
+          if (conclusion === 1) return { name, result: "通过", tone: "passed" };
+          if (conclusion === 2) return { name, result: "不通过", tone: "failed" };
+          if (conclusion === 6) return { name, result: "待定", tone: "pending" };
+          return { name, result: "已提交", tone: "pending" };
+        });
+    }
+
+    function excellentResumePassed(candidate, range = currentRange) {
+      return excellentEvaluationRecords(candidate).some(record =>
+        Number(record[2] || 0) === 1 &&
+        Number(record[3] || 0) === 1 &&
+        within(new Date(Number(record?.[5] || record?.[4] || 0)), range[0], range[1])
+      );
+    }
+
+    function excellentResumePassDate(candidate, range = currentRange) {
+      const times = excellentEvaluationRecords(candidate)
+        .filter(record =>
+          Number(record[2] || 0) === 1 &&
+          Number(record[3] || 0) === 1 &&
+          within(new Date(Number(record?.[5] || record?.[4] || 0)), range[0], range[1])
+        )
+        .map(record => Number(record[5] || record[4] || 0))
+        .filter(Boolean);
+      return times.length ? new Date(Math.min(...times)) : undefined;
+    }
+
+    function dedupeExcellentPeople(candidates, dateGetter) {
+      const unique = new Map();
+      candidates.forEach(candidate => {
+        const key = candidate.talentId || candidate.id;
+        const existing = unique.get(key);
+        const candidateDate = dateGetter(candidate)?.getTime?.() || 0;
+        const existingDate = existing ? (dateGetter(existing)?.getTime?.() || 0) : -1;
+        if (!existing || candidateDate >= existingDate) unique.set(key, candidate);
+      });
+      return [...unique.values()];
+    }
+
+    function excellentInterviewDate(candidate, stageIndex, range = currentRange) {
+      const dates = Array.isArray(candidate.interviewDates?.[stageIndex])
+        ? candidate.interviewDates[stageIndex].filter(date => within(date, range[0], range[1]))
+        : [];
+      return dates.length ? new Date(Math.min(...dates.map(date => date.getTime()))) : undefined;
+    }
+
+    function excellentCandidatesForStage(stageIndex, range = currentRange) {
+      if (currentJob?.id !== EXCELLENT_JOB_ID) return null;
+      const evaluationEntries = CANDIDATES.filter(candidate =>
+        excellentEvaluationSubmitted(candidate, range)
+      );
+      const resumePassed = evaluationEntries.filter(candidate => excellentResumePassed(candidate, range));
+      const interviewCandidates = targetStageIndex => dedupeExcellentPeople(
+        CANDIDATES.filter(candidate => excellentInterviewDate(candidate, targetStageIndex, range)),
+        candidate => excellentInterviewDate(candidate, targetStageIndex, range)
+      );
+
+      if (stageIndex === 0) {
+        return CANDIDATES.filter(candidate =>
+          within(candidate.rawEntries?.[0] || candidate.createdAt, range[0], range[1])
+        );
+      }
+      if (stageIndex === 1) return evaluationEntries;
+      if (stageIndex === 2) return resumePassed;
+      if ([3, 4, 6].includes(stageIndex)) return interviewCandidates(stageIndex);
+      return null;
+    }
+
+    // 明细里展示的“阶段日期”：面试阶段取周期内的面试时间；HR面流程取合并状态中最近一次进入时间。
+    function stageDisplayDate(candidate, stageIndex, range = currentRange) {
+      if (currentJob?.id === EXCELLENT_JOB_ID) {
+        if (stageIndex === 0) return candidate.rawEntries?.[0] || candidate.createdAt;
+        if (stageIndex === 1) return excellentEvaluationSubmittedDate(candidate, range);
+        if (stageIndex === 2) return excellentResumePassDate(candidate, range);
+        if ([3, 4, 6].includes(stageIndex)) return excellentInterviewDate(candidate, stageIndex, range);
+      }
+      if (STAGES[stageIndex]?.id === "hr") return hrMergedStageDate(candidate, range);
+      if (INTERVIEWER_STAGE_INDEXES.has(stageIndex)) {
+        const dates = candidate.interviewDates?.[stageIndex];
+        if (Array.isArray(dates)) {
+          const inRange = dates.find(date => within(date, range[0], range[1]));
+          if (inRange) return inRange;
+        }
+      }
+      return candidate.entries[stageIndex];
+    }
+
+    function candidatesForStage(stageIndex, range = currentRange) {
+      // 面试阶段(专业一面/二面/CEO面)按“面试发生时间”判定：该阶段任意一场面试落在周期内即计入；
+      // 其余阶段按飞书“进入环节时间”判定。
+      if (STAGES[stageIndex]?.id === "hr") {
+        return CANDIDATES.filter(candidate => hrQualifyingDates(candidate, range).length > 0);
+      }
+      if (INTERVIEWER_STAGE_INDEXES.has(stageIndex)) {
+        return CANDIDATES.filter(candidate => {
+          const dates = candidate.interviewDates?.[stageIndex];
+          if (Array.isArray(dates)) return dates.some(date => within(date, range[0], range[1]));
+          // 无面试时间明细(如示例数据)时回退到进入环节时间
+          return within(candidate.entries[stageIndex], range[0], range[1]);
+        });
+      }
+      return CANDIDATES.filter(candidate => within(candidate.entries[stageIndex], range[0], range[1]));
+    }
+
+    function reportCandidatesForStage(stageIndex, range = currentRange) {
+      // 技术面(3/4/5)：邀约/安排、计划面试、面试结束、面评提交任一在周期内即计入；
+      // 不要求进度已到达该阶段。同一人同一轮在下方去重。
+      const excellentPeople = excellentCandidatesForStage(stageIndex, range);
+      if (Array.isArray(excellentPeople)) return excellentPeople;
+      const pendingIndex = STAGES.findIndex(stage => stage.id === "pending");
+      const onboardIndex = STAGES.findIndex(stage => stage.id === "onboard");
+      const hrIndex = STAGES.findIndex(stage => stage.id === "hr");
+      const evaluationIndex = STAGES.findIndex(stage => stage.id === "evaluation");
+      if (currentJob?.id === FULLSTACK_JOB_ID && stageIndex === onboardIndex) {
+        const beijingToday = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "Asia/Shanghai",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        }).format(new Date());
+        const start = new Date(`${FULLSTACK_ONBOARD_CUMULATIVE_START_DATE}T00:00:00+08:00`);
+        const end = new Date(`${beijingToday}T23:59:59.999+08:00`);
+        const uniquePeople = new Map();
+        CANDIDATES.forEach(candidate => {
+          const onboardDate = candidate.entries?.[onboardIndex];
+          if (!onboardDate || onboardDate < start || onboardDate > end) return;
+          const key = candidate.talentId || candidate.id;
+          const existing = uniquePeople.get(key);
+          if (!existing || onboardDate >= existing.entries?.[onboardIndex]) {
+            uniquePeople.set(key, candidate);
+          }
+        });
+        return [...uniquePeople.values()];
+      }
+      let people = candidatesForStage(stageIndex, range);
+      if (stageIndex === evaluationIndex) {
+        people = people.filter(candidate => !candidate.excludeFromResumeEvaluation);
+      }
+      if (currentJob?.id === FULLSTACK_JOB_ID && stageIndex === onboardIndex) {
+        people = people.filter(candidate => submittedHrEvaluationDatesInWindow(candidate, range).length > 0);
+      }
+      if (stageIndex === hrIndex) {
+        people = people.filter(isActiveHrFlow);
+      } else {
+        people = people.filter(candidate =>
+          INTERVIEWER_STAGE_INDEXES.has(stageIndex) || candidate.currentStage >= stageIndex
+        );
+      }
+      if (INTERVIEWER_STAGE_INDEXES.has(stageIndex)) {
+        const uniquePeople = new Map();
+        people.forEach(candidate => {
+          const key = candidate.talentId || candidate.id;
+          const existing = uniquePeople.get(key);
+          if (!existing || stageDisplayDate(candidate, stageIndex, range) > stageDisplayDate(existing, stageIndex, range)) {
+            uniquePeople.set(key, candidate);
+          }
+        });
+        return [...uniquePeople.values()];
+      }
+      if (stageIndex === hrIndex) {
+        const excludeOnboardPeople = currentJob?.id !== FULLSTACK_JOB_ID;
+        const onboardPeople = excludeOnboardPeople
+          ? new Set(CANDIDATES
+              .filter(candidate => candidate.feishuStage === onboardIndex)
+              .map(candidate => candidate.talentId || candidate.id))
+          : new Set();
+        const mergedPeople = new Map();
+        people.forEach(candidate => {
+          const key = candidate.talentId || candidate.id;
+          if (onboardPeople.has(key)) return;
+          const existing = mergedPeople.get(key);
+          if (!existing || stageDisplayDate(candidate, stageIndex, range) > stageDisplayDate(existing, stageIndex, range)) {
+            mergedPeople.set(key, candidate);
+          }
+        });
+        return [...mergedPeople.values()];
+      }
+      if (stageIndex !== pendingIndex || onboardIndex < 0) return people;
+
+      const onboardCandidates = candidatesForStage(onboardIndex, range).filter(candidate =>
+        candidate.currentStage >= onboardIndex
+      );
+      const onboardPeople = new Set(onboardCandidates.map(candidate =>
+        candidate.talentId || candidate.id
+      ));
+      return people.filter(candidate => !onboardPeople.has(candidate.talentId || candidate.id));
+    }
+
+    function periodStats() {
+      const stageCounts = STAGES.map((_, index) => reportCandidatesForStage(index).length);
+      return { stageCounts };
+    }
+
+    function workingDayCount(range = currentRange) {
+      let count = 0;
+      let cursor = startOfDay(range[0]);
+      const end = startOfDay(range[1]);
+      while (cursor <= end) {
+        if (cursor.getDay() !== 0 && cursor.getDay() !== 6) count += 1;
+        cursor = addDays(cursor, 1);
+      }
+      return count;
+    }
+
+    function renderTargets(stats) {
+      const workingDays = workingDayCount();
+      const reviewTarget = workingDays * 10;
+      const reviewActual = stats.stageCounts[1];
+      const reviewCompletion = reviewTarget ? reviewActual / reviewTarget * 100 : 0;
+      const reviewGap = reviewActual - reviewTarget;
+
+      const passRateTarget = 50;
+      const passTarget = Math.round(reviewTarget * passRateTarget / 100);
+      const passActual = stats.stageCounts[2];
+      const passRate = reviewActual ? passActual / reviewActual * 100 : 0;
+      const passCompletion = passRateTarget ? passRate / passRateTarget * 100 : 0;
+      const passRateGap = passRate - passRateTarget;
+
+      setText("review-target-pill", `${workingDays}个工作日 · 10份/日`);
+      setText("review-target", reviewTarget);
+      setText("review-actual", reviewActual);
+      setText("review-completion", `完成率 ${Math.round(reviewCompletion)}%`);
+      setText("review-gap", reviewGap >= 0 ? `超目标 ${reviewGap}份` : `差距 ${Math.abs(reviewGap)}份`);
+      document.getElementById("review-gap").className = `gap ${reviewGap >= 0 ? "good" : "warn"}`;
+      document.getElementById("review-progress").style.width = `${Math.min(100, Math.max(0, reviewCompletion))}%`;
+
+      setText("pass-target", passTarget);
+      setText("pass-actual", passActual);
+      setText("pass-rate", `${passRate.toFixed(1)}% 通过率`);
+      setText("pass-completion", `通过率目标完成度 ${Math.round(passCompletion)}%`);
+      setText("pass-rate-gap", passRateGap >= 0
+        ? `通过率超目标 ${passRateGap.toFixed(1)}个百分点`
+        : `通过率差距 ${Math.abs(passRateGap).toFixed(1)}个百分点`);
+      document.getElementById("pass-rate-gap").className = `gap ${passRateGap >= 0 ? "good" : "warn"}`;
+      document.getElementById("pass-progress").style.width = `${Math.min(100, Math.max(0, passCompletion))}%`;
+    }
+
+    function interviewStatus(roundSummary, records) {
+      const conclusions = records.map(record => Number(record[3] || 0));
+      const commitStatuses = records.map(record => Number(record[2] || 0));
+      if (conclusions.includes(6) || [10, 11, 12, 13, 14, 15, 16, 17, 18].includes(roundSummary)) return "待定";
+      if (roundSummary === 2 || (conclusions.length && conclusions.every(value => value === 3))) return "待面试";
+      if (roundSummary === 3 || [7, 8, 9].includes(roundSummary) || commitStatuses.some(value => value !== 1)) return "待提交面评";
+      if (roundSummary === 4 || (conclusions.length && conclusions.every(value => value === 1))) return "已通过";
+      if ([5, 6].includes(roundSummary) || conclusions.includes(2) || conclusions.includes(5)) return "未通过";
+      return "待提交面评";
+    }
+
+    function recordStatus(record) {
+      if (!record) return "— · 未开始";
+      const score = record[1] || "—";
+      const commitStatus = Number(record[2] || 0);
+      const conclusion = Number(record[3] || 0);
+      if (commitStatus !== 1 || conclusion === 4) return `${score} · 待提交面评`;
+      const conclusionLabels = {
+        1: "已通过",
+        2: "未通过",
+        3: "待面试",
+        5: "未到场",
+        6: "待定"
+      };
+      return `${score} · ${conclusionLabels[conclusion] || "已提交"}`;
+    }
+
+    // 统一口径的“评分 / 结果”：只有“待定”归为 pending；未提交、待面试、未到场均显示横杠
+    // prefix 用于一面（面试官不固定）时在单元格里标出具体面试官
+    // 返回 HTML：仅对结果文字着色，人名与分数保持默认色
+    function scoreResultCell(record, prefix = "") {
+      if (!record) {
+        return `— · <span class="result-tag pending">未开始</span>`;
+      }
+      const score = record[1] || "—";
+      const commitStatus = Number(record[2] || 0);
+      const conclusion = Number(record[3] || 0);
+      const head = prefix ? `${escapeHtml(prefix)} ` : "";
+      if (commitStatus !== 1 || !conclusion || [3, 4, 5].includes(conclusion)) {
+        return `${head}—`;
+      }
+      let result;
+      if (commitStatus === 1 && conclusion === 1) result = "通过";
+      else if (commitStatus === 1 && conclusion === 2) result = "不通过";
+      else result = "pending";
+      return `${head}${escapeHtml(String(score))} · <span class="result-tag ${resultTone(result)}">${result}</span>`;
+    }
+
+    // 结果分类，供筛选与着色使用；只有“待定”归入 pending
+    function recordResult(record) {
+      if (!record) return "未开始";
+      const commitStatus = Number(record[2] || 0);
+      const conclusion = Number(record[3] || 0);
+      if (commitStatus !== 1 || !conclusion || [3, 4, 5].includes(conclusion)) return "无结论";
+      if (commitStatus === 1 && conclusion === 1) return "通过";
+      if (commitStatus === 1 && conclusion === 2) return "不通过";
+      return "pending";
+    }
+
+    function resultTone(result) {
+      if (result === "通过") return "passed";
+      if (result === "不通过") return "failed";
+      return "pending";
+    }
+
+    // 原全栈按三轮面评推导进展；优秀简历在二面通过后改用飞书真实阶段，避免提前显示 HR 面。
+    function interviewerStageName(firstRoundRecord, ouyangRecord, chenglinRecord, feishuStage = -1) {
+      const first = recordResult(firstRoundRecord);   // 一面
+      if (first !== "通过") return "技术一面";
+      const second = recordResult(ouyangRecord);      // 二面（面试官04）
+      if (second !== "通过") return "技术二面";
+      if (currentJob?.id === EXCELLENT_JOB_ID) {
+        if (feishuStage >= 5) return stageNameForJob(feishuStage);
+        return "技术二面通过";
+      }
+      const final = recordResult(chenglinRecord);     // 终面（面试官05）
+      if (final !== "通过") return "技术终面";
+      return "HR面";
+    }
+
+    // 统计选定周期内、按岗位对应的指定技术面试官的面评结果分布。
+    //   优秀简历：仅正式提交且已有明确结论的面试计入总场次；通过=结论1，不通过=结论2，待定=结论6。
+    //   其他岗位保留原口径：未提交/待面试等仍计入总场次，但不进入三类结果。
+    function interviewRateStats(selectedInterviewers) {
+      const interviews = Array.isArray(currentJob?.interviews) ? currentJob.interviews : [];
+      const gate = (selectedInterviewers && selectedInterviewers.size) ? selectedInterviewers : null;
+      const trackedInterviewers = trackedInterviewersForJob(currentJob);
+      const isGate = name => trackedInterviewers.has(name) && (gate ? gate.has(name) : true);
+      let total = 0, passed = 0, failed = 0, hold = 0;
+      interviews.forEach(interview => {
+        if (!interviewInRange(interview, currentRange[0], currentRange[1])) return;
+        const records = Array.isArray(interview[6]) ? interview[6] : [];
+        records.forEach(record => {
+          if (currentJob?.id === EXCELLENT_JOB_ID) {
+            const stageIndex = excellentStageIndexForRecord(record, interview[1], currentJob);
+            if (!isVisibleInterviewStageForJob(stageIndex, currentJob)) return;
+          }
+          if (!isGate(String(record[0] || ""))) return;
+          const commitStatus = Number(record[2] || 0);
+          const conclusion = Number(record[3] || 0);
+          const hasConclusion = commitStatus === 1 && [1, 2, 6].includes(conclusion);
+          if (currentJob?.id === EXCELLENT_JOB_ID && !hasConclusion) return;
+          total += 1;
+          if (commitStatus === 1 && conclusion === 1) passed += 1;
+          else if (commitStatus === 1 && conclusion === 2) failed += 1;
+          else if (commitStatus === 1 && conclusion === 6) hold += 1;
+        });
+      });
+      const pct = n => total ? Math.round((n / total) * 1000) / 10 : 0;
+      return { total, passed, failed, hold, passRate: pct(passed), failRate: pct(failed), holdRate: pct(hold) };
+    }
+
+    function interviewTone(status) {
+      if (status === "待定") return "hold";
+      if (status === "待面试" || status === "待提交面评") return "pending";
+      if (status === "未通过") return "failed";
+      return "passed";
+    }
+
+    function interviewRowsForPeriod(selectedInterviewers) {
+      if (!INTERVIEW_VIEW_JOB_IDS.has(currentJob?.id)) return [];
+      const candidateByApplication = new Map(CANDIDATES.map(candidate => [String(candidate.id), candidate]));
+      const interviews = Array.isArray(currentJob?.interviews) ? currentJob.interviews : [];
+
+      const trackedInterviewers = trackedInterviewersForJob(currentJob);
+      const roundOfRecord = (record, interview) => STAGE_INDEX_TO_ROUND.get(
+        currentJob?.id === EXCELLENT_JOB_ID
+          ? excellentStageIndexForRecord(record, interview?.[1], currentJob)
+          : INTERVIEWER_TO_STAGE.get(String(record?.[0] || ""))
+      ) || "";
+      const isSubmitted = record => Number(record[2] || 0) === 1 &&
+        [1, 2, 3, 5, 6].includes(Number(record[3] || 0));
+
+      // 第一步：周期内有该岗位指定面试官之一的安排或面试记录，即纳入候选人。
+      const gate = (selectedInterviewers && selectedInterviewers.size) ? selectedInterviewers : null;
+      const includedCandidateIds = new Set();
+      // 候选人->是否含重点面试官、是否含gate面试官
+      const appHasTracked = new Set();
+      const appHasGate = new Set();
+      interviews.forEach(interview => {
+        const applicationId = String(interview[1] || "");
+        if (!applicationId) return;
+        if (interviewHasTracked(interview, currentJob)) appHasTracked.add(applicationId);
+        if (gate && (Array.isArray(interview[6]) ? interview[6] : [])
+            .some(record => gate.has(String(record[0] || "")))) appHasGate.add(applicationId);
+      });
+      interviews.forEach(interview => {
+        if (!interviewInRange(interview, currentRange[0], currentRange[1])) return;
+        const applicationId = String(interview[1] || "");
+        if (!appHasTracked.has(applicationId)) return;
+        if (gate && !appHasGate.has(applicationId)) return;
+        const records = Array.isArray(interview[6]) ? interview[6] : [];
+        if (!records.some(record => {
+          const name = String(record[0] || "");
+          return trackedInterviewers.has(name) && (!gate || gate.has(name));
+        })) return;
+        const candidate = candidateByApplication.get(applicationId);
+        includedCandidateIds.add(candidate?.talentId || applicationId);
+      });
+
+      // 第二步：为纳入的候选人按指定面试官归入一/二/三面（不受周期限制，展示完整轮次）。
+      // 每轮代表记录：已提交面评优先，否则取较晚一场。
+      const grouped = new Map();
+      interviews
+        .sort((a, b) => Number(a[2] || 0) - Number(b[2] || 0))
+        .forEach(interview => {
+          const applicationId = String(interview[1] || "");
+          const candidate = candidateByApplication.get(applicationId);
+          const candidateId = candidate?.talentId || applicationId;
+          if (!includedCandidateIds.has(candidateId)) return;
+          if (!appHasTracked.has(applicationId)) return;
+          const records = (Array.isArray(interview[6]) ? interview[6] : [])
+            .filter(record => trackedInterviewers.has(String(record[0] || "")))
+            .filter(record => currentJob?.id !== EXCELLENT_JOB_ID ||
+              isVisibleInterviewStageForJob(
+                excellentStageIndexForRecord(record, applicationId, currentJob),
+                currentJob
+              ));
+          if (!records.length) return;
+
+          const existing = grouped.get(candidateId) || {
+            interviewId: String(interview[0] || ""),
+            applicationId,
+            candidateId,
+            name: candidate?.name || `简历 ${applicationId.slice(-4)}`,
+            currentStage: candidate ? STAGES[candidate.currentStage]?.name || "—" : "—",
+            feishuStage: Number(candidate?.feishuStage ?? -1),
+            peopleLink: candidate?.peopleLink || "",
+            beginTime: 0,
+            statusTime: 0,
+            roundRecords: { 一面: null, 二面: null, 三面: null },
+            roundTime: { 一面: 0, 二面: 0, 三面: 0 },
+            status: "待提交面评"
+          };
+
+          existing.feishuStage = Math.max(existing.feishuStage, Number(candidate?.feishuStage ?? -1));
+
+          const beginTime = Number(interview[2] || 0);
+          records.forEach(record => {
+            const round = roundOfRecord(record, interview);
+            if (!round) return;
+            const prev = existing.roundRecords[round];
+            const prevSubmitted = prev && isSubmitted(prev);
+            const curSubmitted = isSubmitted(record);
+            if (!prev || (curSubmitted && !prevSubmitted) ||
+                (curSubmitted === prevSubmitted && beginTime >= existing.roundTime[round])) {
+              existing.roundRecords[round] = record;
+              existing.roundTime[round] = beginTime;
+            }
+          });
+
+          existing.interviewId = String(interview[0] || existing.interviewId);
+          existing.beginTime = Math.max(existing.beginTime, beginTime);
+          const record = records.find(isSubmitted) || records[0] || null;
+          const hasSubmittedConclusion = record && isSubmitted(record);
+          if (hasSubmittedConclusion && beginTime >= existing.statusTime) {
+            existing.status = interviewStatus(0, [record]);
+            existing.statusTime = beginTime;
+          } else if (!existing.statusTime && beginTime >= existing.beginTime) {
+            existing.status = interviewStatus(0, record ? [record] : []);
+          }
+          grouped.set(candidateId, existing);
+        });
+
+      return [...grouped.values()]
+        .map(row => {
+          // 各轮记录已按指定面试官归好。
+          const firstRoundRecord = row.roundRecords["一面"];
+          const ouyangRecord = row.roundRecords["二面"];
+          const chenglinRecord = row.roundRecords["三面"];
+          const firstRoundName = firstRoundRecord ? String(firstRoundRecord[0] || "") : "";
+          const ouyangName = ouyangRecord ? String(ouyangRecord[0] || "") : "";
+          const chenglinName = chenglinRecord ? String(chenglinRecord[0] || "") : "";
+          const interviewerNames = [firstRoundName, ouyangName, chenglinName].filter(Boolean);
+          const stageName = interviewerStageName(
+            firstRoundRecord,
+            ouyangRecord,
+            chenglinRecord,
+            row.feishuStage
+          );
+          return {
+            ...row,
+            interviewers: interviewerNames,
+            currentStage: stageName,
+            firstRoundRecord,
+            ouyangRecord,
+            chenglinRecord,
+            firstRound: scoreResultCell(firstRoundRecord, firstRoundName),
+            ouyang: scoreResultCell(ouyangRecord, ouyangName),
+            chenglin: scoreResultCell(chenglinRecord, chenglinName),
+            tone: interviewTone(row.status)
+          };
+        })
+        .sort((a, b) => b.beginTime - a.beginTime);
+    }
+
+    // 面试官筛选只保留当前岗位口径里的指定技术面试官。
+    function populateInterviewerFilter() {
+      const menu = document.getElementById("interviewer-filter-menu");
+      if (!menu) return;
+      const ordered = currentJob?.id === EXCELLENT_JOB_ID
+        ? [...trackedInterviewersForJob(currentJob)].sort((a, b) => a.localeCompare(b, "zh-CN"))
+        : ["面试官01", "面试官02", "面试官03", "面试官04", "面试官05"];
+      const prevChecked = new Set([...menu.querySelectorAll('input[name="interviewer-filter"]:checked')]
+        .map(input => input.value).filter(value => value !== "全部"));
+      const options = [`<label class="multiselect-option"><input type="checkbox" name="interviewer-filter" value="全部"${prevChecked.size ? "" : " checked"}>全部</label>`];
+      ordered.forEach(name => {
+        options.push(`<label class="multiselect-option"><input type="checkbox" name="interviewer-filter" value="${escapeHtml(name)}"${prevChecked.has(name) ? " checked" : ""}>${escapeHtml(name)}</label>`);
+      });
+      menu.innerHTML = options.join("");
+      syncInterviewerFilterLabel();
+    }
+
+    const INTERVIEW_COLLAPSE_LIMIT = 5;
+    let interviewRowsExpanded = false;
+
+    function renderInterviewers() {
+      const interviewerFilters = [...document.querySelectorAll('input[name="interviewer-filter"]')];
+      const statusFilters = [...document.querySelectorAll('input[name="status-filter"]')];
+      const tableBody = document.getElementById("interview-rows");
+      const empty = document.getElementById("interview-empty");
+      if (!interviewerFilters.length || !statusFilters.length || !tableBody || !empty) return;
+
+      const selectedInterviewers = new Set(interviewerFilters
+        .filter(input => input.checked && input.value !== "全部")
+        .map(input => input.value));
+      const selectedStatuses = new Set(statusFilters
+        .filter(input => input.checked && input.value !== "全部")
+        .map(input => input.value));
+
+      // 纳入闸门（周期内 + 选定面试官参与）已在此处理；纳入后展示该候选人全部轮次
+      const rows = interviewRowsForPeriod(selectedInterviewers);
+
+      const filtered = rows.filter(row => {
+        // 面试结果筛选：只判定“选定面试官实际参与的那几轮”的结果，命中即保留。
+        //   轮次按五位指定面试官归类（同一人可跨轮）；
+        //   未选面试官(全部) → 三轮都看。
+        if (selectedStatuses.size) {
+          const roundRecords = currentJob?.id === EXCELLENT_JOB_ID
+            ? [row.firstRoundRecord, row.ouyangRecord]
+            : [row.firstRoundRecord, row.ouyangRecord, row.chenglinRecord];
+          let recordsToCheck;
+          if (selectedInterviewers.size) {
+            recordsToCheck = roundRecords.filter(record =>
+              record && selectedInterviewers.has(String(record[0] || "")));
+          } else {
+            recordsToCheck = roundRecords;
+          }
+          const results = recordsToCheck.filter(Boolean).map(recordResult);
+          if (!results.some(result => selectedStatuses.has(result))) return false;
+        }
+        return true;
+      });
+
+      const candidateCount = new Set(filtered.map(row => row.candidateId)).size;
+      const collapsible = filtered.length > INTERVIEW_COLLAPSE_LIMIT;
+      if (!collapsible) interviewRowsExpanded = false;
+      const visibleRows = collapsible && !interviewRowsExpanded
+        ? filtered.slice(0, INTERVIEW_COLLAPSE_LIMIT)
+        : filtered;
+
+      tableBody.innerHTML = visibleRows.map(row => {
+        const finalRoundCell = currentJob?.id === EXCELLENT_JOB_ID
+          ? ""
+          : `<td><span class="interview-score">${row.chenglin}</span></td>`;
+        const peopleAction = row.peopleLink
+          ? `<a class="people-btn" href="${escapeHtml(row.peopleLink)}" target="_blank" rel="noopener noreferrer">链接已移除</a>`
+          : `<span class="section-note">暂无链接</span>`;
+        return `<tr>
+          <td class="candidate-name">${escapeHtml(row.name)}</td>
+          <td><span class="interview-score">${row.firstRound}</span></td>
+          <td><span class="interview-score">${row.ouyang}</span></td>
+          ${finalRoundCell}
+          <td><span class="current-stage-cell"><span>${escapeHtml(row.currentStage)}</span></span></td>
+          <td>${peopleAction}</td>
+        </tr>`;
+      }).join("");
+
+      setText("interview-result-count", `${candidateCount}位人选`);
+
+      const toggleWrap = document.getElementById("interview-toggle-wrap");
+      const toggleButton = document.getElementById("interview-toggle");
+      if (toggleWrap && toggleButton) {
+        toggleWrap.hidden = !collapsible;
+        toggleButton.classList.toggle("expanded", interviewRowsExpanded);
+        toggleButton.setAttribute("aria-expanded", String(interviewRowsExpanded));
+        toggleButton.innerHTML = interviewRowsExpanded
+          ? `收起，仅显示 ${INTERVIEW_COLLAPSE_LIMIT} 人<span class="chevron">▾</span>`
+          : `展开全部 ${candidateCount} 人<span class="chevron">▾</span>`;
+      }
+
+      // 周期内、选定面试官参与的场次结果分布（通过率/不通过率/待定率）
+      const stats = interviewRateStats(selectedInterviewers);
+      const rateBox = document.getElementById("interview-rate-stats");
+      if (rateBox) {
+        rateBox.innerHTML = stats.total
+          ? `<span class="rate-chip passed">通过 ${stats.passRate}%</span>` +
+            `<span class="rate-chip failed">不通过 ${stats.failRate}%</span>` +
+            `<span class="rate-chip pending">待定 ${stats.holdRate}%</span>` +
+            `<span class="rate-total">共 ${stats.total} 场</span>`
+          : "";
+      }
+      empty.textContent = Array.isArray(currentJob?.interviews)
+        ? "所选周期暂无符合条件的面试记录"
+        : "当前数据快照暂未包含面试评价，请刷新飞书数据后查看";
+      empty.hidden = filtered.length !== 0;
+    }
+
+    function syncInterviewerFilterLabel() {
+      const filters = [...document.querySelectorAll('input[name="interviewer-filter"]')];
+      const selected = filters.filter(input => input.checked && input.value !== "全部");
+      const label = document.getElementById("interviewer-filter-label");
+      if (!label) return;
+      if (!selected.length) label.textContent = "全部";
+      else label.textContent = selected.map(input => input.value).join("、");
+    }
+
+    function syncStatusFilterLabel() {
+      const filters = [...document.querySelectorAll('input[name="status-filter"]')];
+      const selected = filters.filter(input => input.checked && input.value !== "全部");
+      const label = document.getElementById("status-filter-label");
+      if (!label) return;
+      if (!selected.length) label.textContent = "全部";
+      else label.textContent = selected.map(input => input.value).join("、");
+    }
+
+    function setText(id, value) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[character]);
+    }
+
+    function sourceChannel(source) {
+      return source === "猎头" ? "猎头" : "HR寻访";
+    }
+
+    function countByChannel(stageIndex, channel) {
+      return reportCandidatesForStage(stageIndex).filter(candidate =>
+        sourceChannel(candidate.source) === channel
+      ).length;
+    }
+
+    function renderVolumeChart() {
+      const container = document.getElementById("volume-chart");
+      const passLabel = currentJob?.id === EXCELLENT_JOB_ID ? "简历通过" : "评估通过";
+      const metrics = [
+        {
+          label: "进入简历评估数",
+          values: [countByChannel(1, "HR寻访"), countByChannel(1, "猎头")]
+        },
+        {
+          label: `${passLabel}数`,
+          values: [countByChannel(2, "HR寻访"), countByChannel(2, "猎头")]
+        }
+      ];
+      setText("eval-chart-note", `所选周期 · HR寻访：进入简历评估${metrics[0].values[0]}份、${passLabel}${metrics[1].values[0]}份 · 猎头：进入简历评估${metrics[0].values[1]}份、${passLabel}${metrics[1].values[1]}份 · 两项指标独立刻度`);
+
+      const width = 760, height = 250, top = 44, baseline = 205, maxBarHeight = 132;
+      const panelWidth = width / 2;
+      const colors = ["#2563eb", "#d97706"];
+      const channels = ["HR寻访", "猎头"];
+      let svg = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="HR寻访与猎头进入简历评估及${passLabel}数量柱状图">`;
+      metrics.forEach((metric, metricIndex) => {
+        const panelStart = metricIndex * panelWidth;
+        const center = panelStart + panelWidth / 2;
+        const maxValue = Math.max(1, ...metric.values);
+        svg += `<text x="${center}" y="24" text-anchor="middle" fill="#172033" font-size="14" font-weight="800">${metric.label}</text>`;
+        svg += `<line x1="${panelStart + 42}" y1="${baseline}" x2="${panelStart + panelWidth - 42}" y2="${baseline}" stroke="#dfe6f0"/>`;
+        metric.values.forEach((value, channelIndex) => {
+          const barHeight = value ? Math.max(5, value / maxValue * maxBarHeight) : 0;
+          const x = panelStart + 90 + channelIndex * 150;
+          const y = baseline - barHeight;
+          svg += `<rect x="${x}" y="${y}" width="68" height="${barHeight}" rx="9" fill="${colors[channelIndex]}"><title>${channels[channelIndex]} ${metric.label} ${value}份</title></rect>`;
+          svg += `<text x="${x + 34}" y="${Math.max(top, y - 9)}" text-anchor="middle" fill="${channelIndex === 0 ? "#1d4ed8" : "#b45309"}" font-size="14" font-weight="800">${value}</text>`;
+          svg += `<text x="${x + 34}" y="${baseline + 24}" text-anchor="middle" fill="#66758c" font-size="11">${channels[channelIndex]}</text>`;
+        });
+        if (metricIndex === 0) svg += `<line x1="${panelWidth}" y1="18" x2="${panelWidth}" y2="232" stroke="#edf1f6"/>`;
+      });
+      svg += `</svg>`;
+      container.innerHTML = svg;
+    }
+
+    function renderFunnel(stats) {
+      const funnel = document.getElementById("funnel");
+      const stageIndexes = funnelStageIndexesForJob();
+      funnel.innerHTML = stageIndexes.map((index, position) => {
+        const stage = STAGES[index];
+        const stageName = stageNameForJob(index);
+        const previousIndex = position > 0 ? stageIndexes[position - 1] : -1;
+        const previous = previousIndex >= 0 ? stats.stageCounts[previousIndex] : 0;
+        const rate = position === 0 ? "流入基数" : previous ? `${Math.round(stats.stageCounts[index] / previous * 100)}% 转化` : "暂无转化";
+        return `<button class="stage-node${index === activeStage ? " active" : ""}" data-stage="${index}"
+          aria-pressed="${index === activeStage}" style="--stage:${stage.color}" title="点击查看${stageName}简历记录">
+          <span class="stage-index">${position + 1}</span>
+          <div class="stage-name">${stageName}</div>
+          <div class="stage-count">${stats.stageCounts[index]}<small>份</small></div>
+          <div class="stage-rate">${rate}</div>
+        </button>`;
+      }).join("");
+      funnel.querySelectorAll(".stage-node").forEach(button => {
+        button.addEventListener("click", () => {
+          activeStage = Number(button.dataset.stage);
+          stageDetailExpanded = false;
+          renderFunnel(periodStats());
+          renderStagePanel(activeStage);
+        });
+      });
+    }
+
+    const DETAIL_COLLAPSE_LIMIT = 10;
+    let stageDetailExpanded = false;
+
+    function renderStagePanel(stageIndex) {
+      const stage = STAGES[stageIndex];
+      const isHrStage = stage.id === "hr";
+      const isExcellent = currentJob?.id === EXCELLENT_JOB_ID;
+      const people = reportCandidatesForStage(stageIndex)
+        .sort((a, b) => stageDisplayDate(b, stageIndex) - stageDisplayDate(a, stageIndex));
+      const collapsible = people.length > DETAIL_COLLAPSE_LIMIT;
+      const visiblePeople = collapsible && !stageDetailExpanded
+        ? people.slice(0, DETAIL_COLLAPSE_LIMIT)
+        : people;
+      const rows = visiblePeople.map(candidate => {
+        const sourceLabel = candidate.sourceDetail
+          ? `${candidate.source} · ${candidate.sourceDetail}`
+          : candidate.source;
+        const evaluationDisplay = isExcellent ? excellentEvaluationDisplay(candidate) : [];
+        const jobLabel = EXCELLENT_SOURCE_JOBS.get(candidate.jobId) || "岗位信息待同步";
+        const evaluatorCell = evaluationDisplay.length
+          ? `<div class="detail-stack">${evaluationDisplay.map(item => `<span>${escapeHtml(item.name)}</span>`).join("")}</div>`
+          : `<span class="stage-panel-meta">未安排</span>`;
+        const evaluationResultCell = evaluationDisplay.length
+          ? `<div class="detail-stack">${evaluationDisplay.map(item => `<span class="evaluation-result ${item.tone}">${escapeHtml(item.result)}</span>`).join("")}</div>`
+          : `<span class="stage-panel-meta">未安排</span>`;
+        const peopleAction = candidate.peopleLink
+          ? `<a class="people-btn" href="${escapeHtml(candidate.peopleLink)}" target="_blank" rel="noopener noreferrer">链接已移除</a>`
+          : `<button class="people-btn" data-person="${escapeHtml(candidate.id)}">链接已移除</button>`;
+        const onboardIndex = STAGES.findIndex(item => item.id === "onboard");
+        const statusOverride = STATUS_OVERRIDES.get(candidate.talentId || candidate.id);
+        const currentStatus = statusOverride
+          ? statusOverride
+          : candidate.feishuStage === onboardIndex
+          ? "已入职"
+          : candidate.activeStatus === 1
+            ? stageNameForJob(candidate.feishuStage)
+            : candidate.terminationStage
+              ? `终止于${candidate.terminationStage}`
+              : "已终止";
+        const offerCells = isHrStage
+          ? `<td>${formatDateTime(candidate.offerSendTime)}</td><td>${formatDateTime(candidate.offerAcceptTime)}</td>`
+          : "";
+        return `
+          <tr>
+            <td class="candidate-name">${escapeHtml(candidate.name)}</td>
+            <td>${isHrStage ? formatDateTime(stageDisplayDate(candidate, stageIndex)) : formatDate(stageDisplayDate(candidate, stageIndex))}</td>
+            ${isExcellent
+              ? `<td>${escapeHtml(jobLabel)}</td><td>${evaluatorCell}</td><td>${evaluationResultCell}</td>`
+              : `<td>${escapeHtml(sourceLabel)}</td>`}
+            <td><span class="status-chip">${escapeHtml(currentStatus)}</span></td>
+            ${offerCells}
+            <td>${peopleAction}</td>
+          </tr>`;
+      }).join("");
+      const metaText = collapsible
+        ? (stageDetailExpanded
+            ? `周期内共 ${people.length} 份，全部展示`
+            : `周期内共 ${people.length} 份，默认展示前 ${DETAIL_COLLAPSE_LIMIT} 份`)
+        : `周期内共 ${people.length} 份，全部展示`;
+      const toggle = collapsible
+        ? `<div class="detail-toggle-wrap"><button class="detail-toggle${stageDetailExpanded ? " expanded" : ""}" id="detail-toggle">${stageDetailExpanded ? "收起" : `展开全部 ${people.length} 份`}<span class="chevron">▾</span></button></div>`
+        : "";
+      document.getElementById("stage-panel").innerHTML = `
+        <div class="stage-panel-head">
+          <div class="stage-panel-title">${isHrStage ? "HR面流程" : stageNameForJob(stageIndex)} · 简历明细</div>
+          <div class="stage-panel-meta">${metaText}</div>
+        </div>
+        ${rows ? `<div style="overflow:auto"><table class="candidate-table${isExcellent ? " excellent-detail-table" : ""}"><thead><tr><th>人选姓名</th><th>进入阶段时间</th>${isExcellent ? "<th>岗位</th><th>评估人</th><th>评估结果</th>" : "<th>来源</th>"}<th>当前状态</th>${isHrStage ? "<th>Offer发出时间</th><th>Offer接受时间</th>" : ""}<th>跳转</th></tr></thead><tbody>${rows}</tbody></table></div>${toggle}` : `<div class="empty">所选周期暂无进入该阶段的人选记录</div>`}`;
+      const toggleBtn = document.getElementById("detail-toggle");
+      if (toggleBtn) {
+        toggleBtn.addEventListener("click", () => {
+          stageDetailExpanded = !stageDetailExpanded;
+          renderStagePanel(stageIndex);
+        });
+      }
+      document.querySelectorAll("button.people-btn").forEach(button => {
+        button.addEventListener("click", () => showToast("公开快照已移除人选链接，不跳转到公司系统。"));
+      });
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2800);
+    }
+
+    function renderJobSwitcher() {
+      const switcher = document.getElementById("job-switcher");
+      if (!LIVE_JOBS.length) {
+        switcher.hidden = true;
+        return;
+      }
+      switcher.hidden = false;
+      switcher.innerHTML = LIVE_JOBS.map(job => `
+          <button class="job-tab${job.id === currentJob?.id ? " active" : ""}"
+            data-job-id="${escapeHtml(job.id)}"
+            aria-pressed="${job.id === currentJob?.id}"
+            title="${escapeHtml(job.title)}">${escapeHtml(job.shortTitle || job.title)}</button>
+        `).join("");
+      switcher.querySelectorAll(".job-tab[data-job-id]").forEach(button => {
+        button.addEventListener("click", () => {
+          const nextJob = LIVE_JOBS.find(job => job.id === button.dataset.jobId);
+          if (!nextJob || nextJob.id === currentJob?.id) return;
+          currentJob = nextJob;
+          CANDIDATES = buildCandidates(currentJob);
+          currentRange = defaultRangeForJob();
+          interviewRowsExpanded = false;
+          setActivePreset("biweek");
+          activeStage = 2;
+          render();
+        });
+      });
+    }
+
+    function updatePageHeading() {
+      const shortTitle = currentJob?.shortTitle || currentJob?.title || "招聘";
+      const fullTitle = currentJob?.title || "Recruiting Progress";
+      setText("page-eyebrow", `${fullTitle} · Recruiting Progress`);
+      setText("page-title", `${shortTitle}招聘数据看板`);
+      document.title = `${shortTitle}招聘数据看板`;
+    }
+
+    function updateFullstackOnlySections() {
+      const showFullstackModules = FULL_VIEW_JOB_IDS.has(currentJob?.id);
+      const showInterviewModule = INTERVIEW_VIEW_JOB_IDS.has(currentJob?.id);
+      const isExcellent = currentJob?.id === EXCELLENT_JOB_ID;
+      const showFinalInterview = !isExcellent;
+      document.getElementById("fullstack-goals-section").hidden = !showFullstackModules;
+      document.getElementById("fullstack-interview-section").hidden = !showInterviewModule;
+      document.getElementById("interview-final-head").hidden = !showFinalInterview;
+      setText("eval-chart-title", isExcellent
+        ? "面试官09/面试官10完成简历评估与简历通过 · 所选周期汇总"
+        : "渠道进入简历评估与评估通过 · 所选周期汇总");
+      setText("pass-target-name", isExcellent ? "简历通过量" : "评估通过量");
+      setText("pass-actual-name", isExcellent ? "简历通过量" : "评估通过量");
+      setText("stage-count-rule-title", isExcellent ? "优秀简历漏斗" : "阶段简历数");
+      setText("stage-count-rule-copy", isExcellent
+        ? "简历入库、简历评估和简历通过沿用原口径。面试人数按候选人所属岗位与指定面试官一一对应：全栈一面为面试官08、面试官02、面试官03，算法一面为面试官10、面试官11；全栈二面为面试官09；HR面为面试官06。邀约创建、计划面试、面试结束或面评提交任一时间落入所选周期即计入，同一人同一轮去重。"
+        : currentJob?.id === FULLSTACK_JOB_ID
+          ? "简历入库、评估通过及面试按飞书原始报表“进入阶段”口径统计；简历评估会剔除已安排面试官04评估、面试官04尚未提交结论且投递已终止的简历。全栈HR面以面试官06或面试官07在HR面环节正式提交面评作为计入门槛，面评提交时间须在2026-07-01至所选结束日期内；满足门槛后，进入Offer沟通、待入职或已入职仍计入HR面。已入职独立按飞书已入职环节统计，自2026年7月1日至今天累计，不受所选日期范围及HR面评提交日期影响；符合HR面门槛的已入职人选可同时出现在HR面和已入职，两处允许重复。各阶段按人选去重。"
+          : "简历入库、评估通过及面试按飞书原始报表“进入阶段”口径统计；简历评估会剔除已安排面试官04评估、面试官04尚未提交结论且投递已终止的简历；HR面以飞书最新状态为准，只统计已进入HR面或之后、当前未终止且未入职的人选，并要求面试邀约、面试发生、进入Offer沟通、进入待入职四类时间至少一项不早于所选开始日期；结束日期不限制，按人选去重。");
+      setText("evaluation-pass-rule-title", isExcellent ? "简历通过" : "评估通过");
+      setText("evaluation-pass-rule-copy", isExcellent
+        ? "面试官09或面试官10在所选周期内至少一人提交通过，即计入简历通过；另一人未提交或不通过不影响，同一投递只计一次。"
+        : "投递记录从“简历评估”进入“评估通过”阶段，按简历份数统计。");
+      setText("technical-stage-rule-title", showFinalInterview ? "技术一面 / 技术二面 / 技术终面" : "技术一面 / 技术二面");
+      setText("technical-stage-rule-copy", showFinalInterview
+        ? "面试轮次按面试官统计：面试官01、面试官02、面试官03计入技术一面，面试官04计入技术二面，面试官05计入技术终面。所选周期内，面试邀约/安排创建时间、计划面试时间、面试结束时间或面评提交时间任一落入周期即计入；同一人同一轮去重。"
+        : "技术一面按岗位匹配面试官：全栈岗位为面试官08、面试官02、面试官03，算法岗位为面试官10、面试官11；技术二面仅统计全栈岗位面试官09；HR面仅统计面试官06。按所选周期内的面试记录计入，同一人同一轮去重。");
+    }
+
+    function applyDataStatus() {
+      if (IS_LIVE_DATA) {
+        setText("data-status", "历史快照 · 已脱敏");
+        setText("definition-note", "原版全栈界面 · 2026-09-21 历史快照 · 不实时更新 · 匿名人选编号");
+      } else {
+        setText("data-status", "示意数据已加载");
+      }
+    }
+
+    function updateDateInputs() {
+      const latestDate = formatDate(TODAY);
+      const startInput = document.getElementById("start-date");
+      const endInput = document.getElementById("end-date");
+      startInput.max = latestDate;
+      endInput.max = latestDate;
+      startInput.value = formatDate(currentRange[0]);
+      endInput.value = formatDate(currentRange[1]);
+      setText("period-copy", `当前统计周期：${formatDate(currentRange[0])}—${formatDate(currentRange[1])}`);
+      const visibleUpdateTime = currentJob?.updateTime || LIVE_DATA?.updateTime;
+      setText("update-time", IS_LIVE_DATA && visibleUpdateTime ? visibleUpdateTime : `${formatDate(TODAY)} 09:00`);
+    }
+
+    function render() {
+      updatePageHeading();
+      updateFullstackOnlySections();
+      renderJobSwitcher();
+      applyDataStatus();
+      updateDateInputs();
+      const visibleStages = funnelStageIndexesForJob();
+      if (!visibleStages.includes(activeStage)) {
+        activeStage = visibleStages.find(index => index > activeStage) || visibleStages[visibleStages.length - 1];
+      }
+      const stats = periodStats();
+      renderTargets(stats);
+      renderVolumeChart();
+      renderFunnel(stats);
+      stageDetailExpanded = false;
+      renderStagePanel(activeStage);
+      populateInterviewerFilter();
+      renderInterviewers();
+    }
+
+    document.getElementById("preset-row").addEventListener("click", event => {
+      const button = event.target.closest(".preset");
+      if (!button) return;
+      document.querySelectorAll(".preset").forEach(item => item.classList.toggle("active", item === button));
+      currentRange = presetRange(button.dataset.period);
+      interviewRowsExpanded = false;
+      render();
+    });
+
+    document.getElementById("apply-range").addEventListener("click", () => {
+      const startValue = document.getElementById("start-date").value;
+      const endValue = document.getElementById("end-date").value;
+      if (!startValue || !endValue) return showToast("请同时选择开始日期和结束日期。 ");
+      const start = startOfDay(`${startValue}T00:00:00`);
+      const end = endOfDay(`${endValue}T00:00:00`);
+      if (start > end) return showToast("开始日期不能晚于结束日期。 ");
+      document.querySelectorAll(".preset").forEach(item => item.classList.remove("active"));
+      currentRange = [start, end];
+      interviewRowsExpanded = false;
+      render();
+    });
+
+    const interviewerMultiselect = document.getElementById("interviewer-multiselect");
+    const interviewerFilterTrigger = document.getElementById("interviewer-filter-trigger");
+    const interviewerFilterMenu = document.getElementById("interviewer-filter-menu");
+    const interviewerFilterInputs = [...document.querySelectorAll('input[name="interviewer-filter"]')];
+
+    interviewerFilterTrigger.addEventListener("click", () => {
+      const shouldOpen = interviewerFilterMenu.hidden;
+      interviewerFilterMenu.hidden = !shouldOpen;
+      interviewerFilterTrigger.setAttribute("aria-expanded", String(shouldOpen));
+    });
+
+    interviewerFilterMenu.addEventListener("change", event => {
+      const changedInput = event.target;
+      const currentInputs = [...document.querySelectorAll('input[name="interviewer-filter"]')];
+      const allInput = currentInputs.find(input => input.value === "全部");
+      const namedInputs = currentInputs.filter(input => input.value !== "全部");
+      if (changedInput.value === "全部" && changedInput.checked) {
+        namedInputs.forEach(input => { input.checked = false; });
+      } else if (changedInput.value !== "全部" && changedInput.checked) {
+        allInput.checked = false;
+      }
+      if (!namedInputs.some(input => input.checked)) allInput.checked = true;
+      syncInterviewerFilterLabel();
+      interviewRowsExpanded = false;
+      renderInterviewers();
+    });
+
+    document.addEventListener("click", event => {
+      if (interviewerMultiselect.contains(event.target)) return;
+      interviewerFilterMenu.hidden = true;
+      interviewerFilterTrigger.setAttribute("aria-expanded", "false");
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+      interviewerFilterMenu.hidden = true;
+      interviewerFilterTrigger.setAttribute("aria-expanded", "false");
+      interviewerFilterTrigger.focus();
+    });
+
+    const statusMultiselect = document.getElementById("status-multiselect");
+    const statusFilterTrigger = document.getElementById("status-filter-trigger");
+    const statusFilterMenu = document.getElementById("status-filter-menu");
+    const statusFilterInputs = [...document.querySelectorAll('input[name="status-filter"]')];
+
+    statusFilterTrigger.addEventListener("click", () => {
+      const shouldOpen = statusFilterMenu.hidden;
+      statusFilterMenu.hidden = !shouldOpen;
+      statusFilterTrigger.setAttribute("aria-expanded", String(shouldOpen));
+    });
+
+    statusFilterMenu.addEventListener("change", event => {
+      const changedInput = event.target;
+      const allInput = statusFilterInputs.find(input => input.value === "全部");
+      const namedInputs = statusFilterInputs.filter(input => input.value !== "全部");
+      if (changedInput.value === "全部" && changedInput.checked) {
+        namedInputs.forEach(input => { input.checked = false; });
+      } else if (changedInput.value !== "全部" && changedInput.checked) {
+        allInput.checked = false;
+      }
+      if (!namedInputs.some(input => input.checked)) allInput.checked = true;
+      syncStatusFilterLabel();
+      interviewRowsExpanded = false;
+      renderInterviewers();
+    });
+
+    document.addEventListener("click", event => {
+      if (statusMultiselect.contains(event.target)) return;
+      statusFilterMenu.hidden = true;
+      statusFilterTrigger.setAttribute("aria-expanded", "false");
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+      statusFilterMenu.hidden = true;
+      statusFilterTrigger.setAttribute("aria-expanded", "false");
+    });
+
+    document.getElementById("interview-toggle").addEventListener("click", () => {
+      interviewRowsExpanded = !interviewRowsExpanded;
+      renderInterviewers();
+    });
+
+    setActivePreset(INITIAL_DATE_RANGE ? null : "biweek");
+    syncInterviewerFilterLabel();
+    syncStatusFilterLabel();
+    render();
+  </script>
+</body>
+</html>

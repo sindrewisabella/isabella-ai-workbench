@@ -7,7 +7,7 @@ LIVE_URL = 'https://sindrewisabella.github.io/isabella-ai-workbench/'
 PAGES = 'index.html home-preview.html library.html skill.html case-note.html workbench-interactive.html cli-case.html salary-case.html evaluation-case.html evaluation-evidence.html dashboard-case.html'.split()
 CODE = 'dashboard-case.js dashboard-case.css portfolio-preview.js portfolio-preview.css case-shell.js case-reading.css case-demos.js case-demos.css salary-import.css evaluation-runs.js evaluation-runs.css workbench-interactive.js workbench-interactive.css'.split()
 DATA = 'portfolio-data.json evaluation-run-data.json october-public-stats.json'.split()
-ASSETS = 'portfolio-dashboard.svg mark.svg female-creator.png workbench-overview.png portfolio-evaluation.png portfolio-salary-import-v2.png workbench-collection.png zone-distribution.png zone-collection.png zone-review.png zone-rescue.png zone-done.png boss-greeting-20261020.mp4 boss-greeting-20261020-poster.png boss-ai-live-showcase-1.25x.mp4 boss-ai-live-showcase-poster.png boss-request-20261020.mp4 boss-request-20261020-poster.png boss-accept-20261021.mp4 boss-accept-20261021-poster.png boss-request-explained-1.25x.mp4 boss-request-explained-poster.png boss-accept-explained-1.25x.mp4 boss-accept-explained-poster.png boss-share-web.m4a payroll-demo-07.svg payroll-demo-08.svg salary-material-demo.mp4'.split()
+ASSETS = 'portfolio-fullstack.png mark.svg female-creator.png workbench-overview.png portfolio-evaluation.png portfolio-salary-import-v2.png workbench-collection.png zone-distribution.png zone-collection.png zone-review.png zone-rescue.png zone-done.png boss-greeting-20261020.mp4 boss-greeting-20261020-poster.png boss-ai-live-showcase-1.25x.mp4 boss-ai-live-showcase-poster.png boss-request-20261020.mp4 boss-request-20261020-poster.png boss-accept-20261021.mp4 boss-accept-20261021-poster.png boss-request-explained-1.25x.mp4 boss-request-explained-poster.png boss-accept-explained-1.25x.mp4 boss-accept-explained-poster.png boss-share-web.m4a payroll-demo-07.svg payroll-demo-08.svg salary-material-demo.mp4'.split()
 CASE_PAGES = {'workbench':'workbench-interactive.html','cli':'cli-case.html','salary':'salary-case.html','evaluation':'evaluation-case.html','dashboard':'dashboard-case.html'}
 def write(p,text):
     p.parent.mkdir(parents=True,exist_ok=True);p.write_text(text,encoding='utf-8')
@@ -25,6 +25,8 @@ def main():
         for name in required:
             target=export/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(source/name,target)
         shutil.copytree(source/'workbench-demo',export/'workbench-demo',ignore=shutil.ignore_patterns('*.map','.DS_Store'))
+        for name in ['index.html','fullstack-data.js','NOTICE.md']:
+            target=export/'fullstack-dashboard'/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(source/'fullstack-dashboard'/name,target)
         js=export/'portfolio-preview.js';js.write_text(js.read_text().replace('<span class="preview-mark">整站预览</span>',''))
         write(export/'.nojekyll','');shutil.rmtree(ROOT/'website');shutil.copytree(export,ROOT/'website')
     manifest.update(snapshotDate='2026-10-26',publicUrl=LIVE_URL,website='website/',catalog='website/portfolio-data.json',caseCount=len(data['cases']),skillCount=len(data['skills']));manifest['cases']=[];manifest['skills']=[]

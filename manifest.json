@@ -24,7 +24,7 @@
     },
     {
       "id": "dashboard",
-      "name": "招聘数据看板",
+      "name": "全栈招聘数据看板",
       "path": "cases/dashboard/",
       "implementation": "browser-demo-and-documentation"
     },

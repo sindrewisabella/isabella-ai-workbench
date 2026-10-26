@@ -3,7 +3,7 @@
 - [薪酬计算器](salary/)
 - [笔试工作台](workbench/)
 - [双城座位图](seats/)
-- [招聘数据看板](dashboard/)
+- [全栈招聘数据看板](dashboard/)
 - [招聘 CLI 系列](cli/)
 - [公司招聘官网](careers/)
 - [批量简历评估](evaluation/)
