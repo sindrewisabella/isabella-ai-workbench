@@ -1,5 +1,5 @@
 {
-  "snapshotDate": "2026-10-21",
+  "snapshotDate": "2026-10-26",
   "website": "website/",
   "caseCount": 33,
   "skillCount": 25,
@@ -24,7 +24,7 @@
     },
     {
       "id": "dashboard",
-      "name": "招聘看板",
+      "name": "招聘数据看板",
       "path": "cases/dashboard/",
       "implementation": "browser-demo-and-documentation"
     },

@@ -1,4 +1,4 @@
-# 招聘看板
+# 招聘数据看板
 
 [展示入口](demo.html) · [输入与输出](GUIDE.md) · [结构化资料](case.json) · [流程图](flow.mmd)
 
