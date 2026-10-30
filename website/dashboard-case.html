@@ -1,8 +1,60 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>全栈招聘数据看板 · isabella</title><link rel="stylesheet" href="workbench-interactive.css"><link rel="stylesheet" href="case-reading.css"><link rel="stylesheet" href="dashboard-case.css?v=20261026-fullstack"><script src="case-shell.js?v=20261026-fullstack" defer></script><script src="dashboard-case.js?v=20261026-fullstack" defer></script></head><body data-case="dashboard"><nav class="page-nav"></nav><main>
-<header class="intro"><div><span class="eyebrow">SEE THE WHOLE RECRUITING PROCESS.</span><h1>全栈招聘数据看板<span class="drawn-star">✴</span></h1><p>把散在飞书里的记录，整理成能看全局、看转化、看面试进展的工作台。</p></div><span class="hand-note">这是实际搭建的原版界面 ↙</span></header>
-<section class="live-demo" id="exhibit" aria-label="全栈招聘看板原版展示"><div class="demo-toolbar"><div><i></i><strong>先看作品 · 全栈招聘数据看板</strong></div><button id="expand-dashboard" aria-expanded="false">放大查看 ↗</button></div><iframe title="全栈招聘看板：原版界面与历史脱敏快照" src="fullstack-dashboard/index.html?start=2026-07-01&amp;end=2026-09-21" sandbox="allow-scripts allow-same-origin allow-top-navigation-by-user-activation"></iframe><div class="demo-tip">可切换日期、点击漏斗阶段、筛选面试官并展开明细。<span>2026-09-21 历史快照 · 姓名与业务标识已替换 · 非实时数据</span></div></section>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>全栈招聘数据看板 · isabella</title>
+  <link rel="icon" href="assets/mark.svg">
+  <link rel="stylesheet" href="workbench-interactive.css">
+  <link rel="stylesheet" href="case-reading.css">
+  <link rel="stylesheet" href="case-studio.css?v=20261030-wine2">
+  <link rel="stylesheet" href="dashboard-case.css?v=20261030-wine2">
+  <script src="case-shell.js?v=20261030-wine2" defer></script>
+  <script src="dashboard-case.js?v=20261030-wine2" defer></script>
+<link rel="stylesheet" href="refined-palette.css?v=20261030-wine2"></head>
+<body data-case="dashboard" class="case-studio">
+<nav class="page-nav"></nav>
+<main class="dashboard-studio">
+  <header class="intro dashboard-intro">
+    <div class="dashboard-intro-copy">
+      <a class="dashboard-back" href="index.html?work=dashboard#selected">← 返回旋转展台</a>
+      <span class="eyebrow">DATA INTO A CLEARER PICTURE.</span>
+      <h1>全栈招聘数据看板<span class="drawn-star" aria-hidden="true">✳</span></h1>
+      <p>先看整体，再定位阶段，<br class="dashboard-mobile-break">最后回到一条具体记录。</p>
+      <div class="dashboard-intro-actions"><a href="#exhibit" class="dashboard-primary">打开看板画布 <span aria-hidden="true">↘</span></a><a href="#why-title" class="dashboard-text-link">为什么做这个看板 ↗</a></div>
+    </div>
+    <aside class="dashboard-snapshot-card" aria-label="看板展示范围">
+      <div class="dashboard-snapshot-top"><span>THE ORIGINAL INTERFACE</span><i aria-hidden="true">✳</i></div>
+      <strong>2026.09.21</strong><span class="dashboard-snapshot-caption">历史脱敏快照 / 实际搭建的原版界面</span>
+      <div class="dashboard-module-route" aria-hidden="true"><span>漏斗</span><i>→</i><span>渠道</span><i>→</i><span>目标</span><i>→</i><span>面试官</span></div>
+      <p>保留原版计算逻辑。姓名、面试官身份与业务标识已替换，展示范围不代表当前招聘状态。</p>
+    </aside>
+  </header>
+  <section class="dashboard-canvas" id="exhibit" aria-label="全栈招聘看板原版展示">
+    <header class="dashboard-canvas-toolbar">
+      <div class="dashboard-window-title"><span class="dashboard-window-dots" aria-hidden="true"><i></i><i></i><i></i></span><div><strong>全栈招聘 / 原版画布</strong><span id="dashboard-load-label">正在载入历史快照…</span></div></div>
+      <div class="dashboard-canvas-actions"><button type="button" id="overview-dashboard">总览 ↑</button><button type="button" id="reset-dashboard">重置演示 ↻</button><a href="fullstack-dashboard/index.html?start=2026-07-01&amp;end=2026-09-21" target="_blank" rel="noopener">单独打开 ↗</a><button type="button" id="expand-dashboard" aria-expanded="false">放大画布 ⤢</button></div>
+    </header>
+    <div class="dashboard-stage-caption"><span><i aria-hidden="true"></i> 原版可操作界面</span><p>选一个模块，定位到真实区域；也可以直接在画布中浏览、筛选和展开记录。</p></div>
+    <div class="dashboard-tabs" role="tablist" aria-label="看板功能区">
+      <button type="button" role="tab" id="tab-funnel" data-zone="funnel" aria-selected="true" aria-controls="dashboard-zone"><small>01</small><span>招聘漏斗</span><i aria-hidden="true">↘</i></button>
+      <button type="button" role="tab" id="tab-trend" data-zone="trend" aria-selected="false" aria-controls="dashboard-zone" tabindex="-1"><small>02</small><span>渠道趋势</span><i aria-hidden="true">↘</i></button>
+      <button type="button" role="tab" id="tab-goals" data-zone="goals" aria-selected="false" aria-controls="dashboard-zone" tabindex="-1"><small>03</small><span>目标完成度</span><i aria-hidden="true">↘</i></button>
+      <button type="button" role="tab" id="tab-interview" data-zone="interview" aria-selected="false" aria-controls="dashboard-zone" tabindex="-1"><small>04</small><span>面试官分析</span><i aria-hidden="true">↘</i></button>
+    </div>
+    <div class="dashboard-stage-layout" id="dashboard-zone" role="tabpanel" aria-labelledby="tab-funnel">
+      <div class="dashboard-frame-wrap">
+        <iframe id="dashboard-frame" title="全栈招聘看板：可筛选的原版界面与2026年9月21日历史脱敏快照" src="fullstack-dashboard/index.html?start=2026-07-01&amp;end=2026-09-21" sandbox="allow-scripts allow-same-origin allow-top-navigation-by-user-activation"></iframe>
+        <div class="dashboard-frame-state" id="dashboard-frame-state"><span class="dashboard-loading-mark" aria-hidden="true">✳</span><p>正在打开原版看板…</p><button type="button" id="retry-dashboard" hidden>重新载入</button></div>
+      </div>
+      <aside class="dashboard-guide" aria-label="当前模块的操作指引"><div id="dashboard-guide-content"></div></aside>
+    </div>
+    <footer class="dashboard-canvas-foot"><span id="dashboard-zone-status" role="status" aria-live="polite">载入后可直接操作看板，或选择一个模块开始。</span><small>历史快照 · 非实时数据 · 不连接公司系统</small></footer>
+  </section>
+  <section class="dashboard-reading-strip" aria-label="看板阅读方式"><div><span>01 / 看全局</span><p>用漏斗与趋势定位问题。</p></div><span aria-hidden="true">→</span><div><span>02 / 看口径</span><p>固定周期，区分阶段与状态。</p></div><span aria-hidden="true">→</span><div><span>03 / 回到记录</span><p>展开明细，核对具体依据。</p></div></section>
 <section class="dashboard-reason" aria-labelledby="why-title"><span class="eyebrow">WHY I BUILT IT.</span><h2 id="why-title">飞书里有记录，但我看不到完整的招聘过程。</h2><p>当时使用的飞书招聘页面，更方便逐个人处理，难以直接看清整个全栈岗位的推进情况。笔试还需要占用面试轮次，系统里的阶段名称和实际招聘环节对不上。想回答“人卡在哪一轮、转化怎样、哪些面试还没反馈”，仍要翻报表、查人选、手动汇总。</p><p>所以我在已有开源看板基础上，按全栈招聘的实际流程重组数据：<b>先看整体，再定位阶段，最后展开到具体人选和面试记录。</b></p></section>
-<section class="dashboard-tour" aria-labelledby="tour-title"><header><span class="eyebrow">EACH SECTION ANSWERS A QUESTION.</span><h2 id="tour-title">每个板块，都是为了解决一个看不清的问题。</h2></header><div class="dashboard-tabs" role="tablist" aria-label="看板功能区"><button role="tab" id="tab-funnel" data-zone="funnel" aria-selected="true" aria-controls="dashboard-zone">01 招聘漏斗</button><button role="tab" id="tab-trend" data-zone="trend" aria-selected="false" tabindex="-1" aria-controls="dashboard-zone">02 渠道趋势</button><button role="tab" id="tab-goals" data-zone="goals" aria-selected="false" tabindex="-1" aria-controls="dashboard-zone">03 目标完成度</button><button role="tab" id="tab-interview" data-zone="interview" aria-selected="false" tabindex="-1" aria-controls="dashboard-zone">04 面试官分析</button></div><div id="dashboard-zone" role="tabpanel" aria-labelledby="tab-funnel"></div></section>
 <section class="dashboard-timeline" aria-labelledby="timeline-title"><span class="eyebrow">THE FIRST WORKING VERSION.</span><h2 id="timeline-title">首版落地：2026 年 7 月 23 日。</h2><p>当天已提交全栈招聘看板，并接入飞书招聘数据快照。这里仅记录第一次搭建的落地时间，后续持续修改不计入首版周期。</p><div class="first-build"><div><time>07.23 / 11:42</time><h3>全栈看板首版提交</h3><p>已有页面与招聘流程视图。</p></div><span aria-hidden="true">→</span><div><time>07.23 / 11:58</time><h3>飞书数据快照提交</h3><p>将页面与招聘记录连接起来。</p></div></div><details><summary>时间依据</summary><p>日期与时刻来自代码仓库的两次提交记录，时区为 UTC+8。它们是提交节点，不是实际开发起止；没有完整起止记录，因此不将 16 分钟的提交间隔当作搭建耗时。</p></details></section>
 <footer class="case-footer"><details><summary>我负责什么，AI 负责什么？</summary><div><p><b>我：</b>提出飞书里看不清的问题，定义招聘阶段、目标、面试轮次与统计口径，检查异常数字并决定怎样跟进。</p><p><b>AI：</b>协助改造开源界面，编写数据读取与汇总代码，实现筛选、图表、明细展开和刷新流程，并辅助排查问题。</p><p>这个项目的价值在于把招聘过程整理成可复核的视图；目前没有足够证据量化节省工时或提升录用率。历史招聘人数不全部归为看板或 AI 的成果。</p></div></details><details><summary>来源、公开范围与复用</summary><div><p>基于 CuiSheng-TAO/algo2-recruit-board 改造，保留原项目贡献说明。这里嵌入的是实际全栈看板的展示副本，不是新画的简化看板。</p><p>公开副本保留原版计算逻辑和历史时间，姓名、面试官身份与所有业务标识替换为匿名编号，移除飞书跳转；不连接公司系统。它是历史展示，不是当前招聘状态。</p><p>换岗位复用前，先核对阶段映射、统计周期和去重规则，再连接相应岗位数据。</p><a href="https://github.com/CuiSheng-TAO/algo2-recruit-board" target="_blank" rel="noopener">原始开源项目 ↗</a></div></details></footer>
-</main></body></html>
+
+</main>
+<div class="sr-only" id="dashboard-announcement" role="status" aria-live="polite"></div>
+</body></html>

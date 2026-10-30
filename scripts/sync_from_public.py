@@ -1,12 +1,26 @@
 #!/usr/bin/env python3
 """Export a reviewed static portfolio using an explicit public-file allowlist."""
 import argparse, html, json, shutil, tempfile
+from datetime import date
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 LIVE_URL = 'https://sindrewisabella.github.io/isabella-ai-workbench/'
 PAGES = 'index.html home-preview.html library.html skill.html case-note.html workbench-interactive.html cli-case.html salary-case.html evaluation-case.html evaluation-evidence.html dashboard-case.html'.split()
-CODE = 'dashboard-case.js dashboard-case.css portfolio-preview.js portfolio-preview.css case-shell.js case-reading.css case-demos.js case-demos.css salary-import.css evaluation-runs.js evaluation-runs.css workbench-interactive.js workbench-interactive.css'.split()
+CODE = '''
+dashboard-case.js dashboard-case.css portfolio-preview.js portfolio-preview.css
+case-shell.js case-reading.css case-demos.js case-demos.css case-studio.css
+salary-import.css evaluation-runs.js evaluation-runs.css
+workbench-interactive.js workbench-interactive.css
+editorial-preview.css module-preview.css motion-preview.js motion-preview.css
+methods-motion.js methods-motion.css notes-motion.js notes-motion.css
+showcase-gallery.js showcase-gallery.css
+showcase-scenes-records.js showcase-scenes-records.css
+showcase-scenes-workflow.js showcase-scenes-workflow.css refined-palette.css
+workbench-studio.js workbench-studio.css cli-studio.js cli-studio.css
+salary-studio.js salary-studio.css evaluation-studio.js evaluation-studio.css
+'''.split()
 DATA = 'portfolio-data.json evaluation-run-data.json october-public-stats.json'.split()
+NOTICES = ['STYLEKIT-LICENSE.txt', 'THIRD_PARTY_NOTICES.md']
 ASSETS = 'portfolio-fullstack.png mark.svg female-creator.png workbench-overview.png portfolio-evaluation.png portfolio-salary-import-v2.png workbench-collection.png zone-distribution.png zone-collection.png zone-review.png zone-rescue.png zone-done.png boss-greeting-20261020.mp4 boss-greeting-20261020-poster.png boss-ai-live-showcase-1.25x.mp4 boss-ai-live-showcase-poster.png boss-request-20261020.mp4 boss-request-20261020-poster.png boss-accept-20261021.mp4 boss-accept-20261021-poster.png boss-request-explained-1.25x.mp4 boss-request-explained-poster.png boss-accept-explained-1.25x.mp4 boss-accept-explained-poster.png boss-share-web.m4a payroll-demo-07.svg payroll-demo-08.svg salary-material-demo.mp4'.split()
 CASE_PAGES = {'workbench':'workbench-interactive.html','cli':'cli-case.html','salary':'salary-case.html','evaluation':'evaluation-case.html','dashboard':'dashboard-case.html'}
 def write(p,text):
@@ -14,7 +28,9 @@ def write(p,text):
 def structured(p,value):write(p,json.dumps(value,ensure_ascii=False,indent=2)+'\n')
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('source',type=Path,help='Reviewed static folder containing portfolio-data.json')
-    source=parser.parse_args().source.resolve();required=PAGES+CODE+DATA+['assets/'+x for x in ASSETS]
+    parser.add_argument('--website-only',action='store_true',help='Update only the allowlisted website; leave case/Skill metadata and manifest unchanged')
+    parser.add_argument('--snapshot-date',type=date.fromisoformat,default=date.today(),metavar='YYYY-MM-DD',help='Full-sync manifest date (default: current date)')
+    args=parser.parse_args();source=args.source.resolve();required=PAGES+CODE+DATA+NOTICES+['assets/'+x for x in ASSETS]
     missing=[x for x in required if not (source/x).is_file()]
     if missing or not (source/'workbench-demo/index.html').is_file():parser.error('Missing reviewed static files: '+', '.join(missing))
     data=json.loads((source/'portfolio-data.json').read_text());manifest=json.loads((ROOT/'manifest.json').read_text());source_ids={x['caseId'] for x in manifest['sourceSnapshots']}
@@ -29,7 +45,10 @@ def main():
             target=export/'fullstack-dashboard'/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(source/'fullstack-dashboard'/name,target)
         js=export/'portfolio-preview.js';js.write_text(js.read_text().replace('<span class="preview-mark">整站预览</span>',''))
         write(export/'.nojekyll','');shutil.rmtree(ROOT/'website');shutil.copytree(export,ROOT/'website')
-    manifest.update(snapshotDate='2026-10-26',publicUrl=LIVE_URL,website='website/',catalog='website/portfolio-data.json',caseCount=len(data['cases']),skillCount=len(data['skills']));manifest['cases']=[];manifest['skills']=[]
+    if args.website_only:
+        print('Exported allowlisted website only; case/Skill metadata and manifest unchanged.')
+        return
+    manifest.update(snapshotDate=args.snapshot_date.isoformat(),publicUrl=LIVE_URL,website='website/',catalog='website/portfolio-data.json',caseCount=len(data['cases']),skillCount=len(data['skills']));manifest['cases']=[];manifest['skills']=[]
     for c in data['cases']:
         folder=ROOT/'cases'/c['id'];structured(folder/'case.json',c)
         sections=[('为什么做',c['why']),('解决什么问题',c['problem']),('原来怎么工作',c['before']),('现在我做什么',c['human']),('现在 AI 做什么',c['ai']),('实际完成范围',c['effect']),('怎样复用',c['reuse']),('贡献与来源',c['contribution'])]
